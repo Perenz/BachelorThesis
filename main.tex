@@ -1,0 +1,81 @@
+\documentclass[epsfig,a4paper,11pt,titlepage,twoside,openany]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[italian, english]{babel}
+\usepackage{lipsum} %genera testo fittizzio
+\usepackage{url} %per scrivere gli URL
+\usepackage{biblatex}
+\usepackage{epsfig}%Per il logo in formato eps
+%Per layot e dimensioni
+\usepackage[paperheight=29.7cm,paperwidth=21cm,outer=2.5cm,inner=2.5cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{plain}
+\usepackage{setspace}
+
+\usepackage{titlesec}
+
+\addbibresource{bibliography.bib}
+
+\counterwithout{footnote}{chapter}
+
+\newcommand\MyBox[2]{
+    \fbox{\lower0.75cm
+        \vbox to 1.7cm{\vfil
+            \hbox to 1.7cm{\hfil\parbox{1.4cm}{\centerline{#1}}\hfil}
+            \vfil}%
+    }%
+}
+\newcommand*\NewPage{\newpage\null\thispagestyle{empty}\newpage}
+
+\begin{document}
+\raggedbottom  
+\widowpenalty10000
+
+
+%No numerazione
+\pagenumbering{gobble}
+\input{pagina_iniziale}
+\clearpage
+\newpage
+
+
+%Inizio numerazione
+\mainmatter
+\tableofcontents
+
+\input{abstract}
+\clearpage
+\newpage
+
+\input{introduction}
+\clearpage
+\newpage
+
+
+
+\chapter{State of the Art}
+This section and its subsections could change significantly
+\section{Social media analysis}
+\section{Psychometric Profiling}
+\section{Personality insights}
+\newpage
+
+\chapter{Design and methodology}
+\section{Components logic}
+\section{Algorithms}
+\newpage
+
+\chapter{Implementation and evaluation}
+\section{Components interactions}
+\section{Algorithms implementation}
+\section{Evaluation metrics}
+\section{Performance evaluation of the system}
+\newpage
+
+\chapter{Conclusions}
+\section{Limitations}
+\section{Future work}
+\newpage
+
+% Bibliography
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}
