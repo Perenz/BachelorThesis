@@ -1,33 +1,64 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Template per Elaborato di Laurea
+% DISI - Dipartimento di Ingegneria e Scienza dell’Informazione
+%
+% update 2015-09-10
+%
+% Per la generazione corretta del 
+% pdflatex nome_file.tex
+% bibtex nome_file.aux
+% pdflatex nome_file.tex
+% pdflatex nome_file.tex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[epsfig,a4paper,11pt,titlepage,twoside,openany]{book}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
 \usepackage[italian, english]{babel}
-\usepackage{lipsum} %genera testo fittizzio
+\usepackage{lipsum} %genera testo fittizio
 \usepackage{url} %per scrivere gli URL
-\usepackage{biblatex}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{plain}
 \usepackage{epsfig}%Per il logo in formato eps
-%Per layot e dimensioni
+%Per layout e dimensioni
 \usepackage[paperheight=29.7cm,paperwidth=21cm,outer=2.5cm,inner=2.5cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{plain}
 \usepackage{setspace}
-
 \usepackage{titlesec}
+\counterwithout{footnote}{chapter}
 
-\addbibresource{bibliography.bib}
+%%%%%%%%%%%%%%
+% supporto lettere accentate
+%
+\usepackage[latin1]{inputenc} % per Windows;
+%\usepackage[utf8x]{inputenc} % per Linux (richiede il pacchetto unicode);
+%\usepackage[applemac]{inputenc} % per Mac.
 
+\singlespacing
+
+\usepackage[english]{babel}
+\usepackage{chngcntr}
 \counterwithout{footnote}{chapter}
 
 \newcommand\MyBox[2]{
     \fbox{\lower0.75cm
         \vbox to 1.7cm{\vfil
             \hbox to 1.7cm{\hfil\parbox{1.4cm}{\centerline{#1}}\hfil}
-            \vfil}%
-    }%
+            \vfil}
+    }
 }
 \newcommand*\NewPage{\newpage\null\thispagestyle{empty}\newpage}
 
+
+\addbibresource{biblio.bib}
+
 \begin{document}
-\raggedbottom  
+\raggedbottom
 \widowpenalty10000
+
+%Nessuna intestazione e pie pagina con numero al centro
+\pagestyle{plain}
 
 
 %No numerazione
@@ -40,42 +71,35 @@
 %Inizio numerazione
 \mainmatter
 \tableofcontents
+\clearpage
+\NewPage
 
-\input{abstract}
+\input{Chapters/abstract}
 \clearpage
 \newpage
 
-\input{introduction}
+\input{Chapters/introduction}
 \clearpage
 \newpage
 
 
 
-\chapter{State of the Art}
-This section and its subsections could change significantly
-\section{Social media analysis}
-\section{Psychometric Profiling}
-\section{Personality insights}
+\input{Chapters/soa}
+\clearpage
 \newpage
 
-\chapter{Design and methodology}
-\section{Components logic}
-\section{Algorithms}
+\input{Chapters/design}
+\clearpage
 \newpage
 
-\chapter{Implementation and evaluation}
-\section{Components interactions}
-\section{Algorithms implementation}
-\section{Evaluation metrics}
-\section{Performance evaluation of the system}
+\input{Chapters/implementation}
+\clearpage
 \newpage
 
-\chapter{Conclusions}
-\section{Limitations}
-\section{Future work}
+\input{Chapters/conclusions}
+\clearpage
 \newpage
 
 % Bibliography
 \printbibliography[heading=bibintoc, title={References}]
-
 \end{document}
