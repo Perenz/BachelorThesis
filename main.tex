@@ -19,8 +19,21 @@
 \usepackage{lipsum} %genera testo fittizio
 \usepackage{url} %per scrivere gli URL
 \usepackage[backend=bibtex]{biblatex}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{multicol}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyvrb}
 \usepackage{plain}
 \usepackage{epsfig}%Per il logo in formato eps
+%\usepackage{hyperref}%Per link interattivi a capitolo, note e citazioni
 %Per layout e dimensioni
 \usepackage[paperheight=29.7cm,paperwidth=21cm,outer=2.5cm,inner=2.5cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{plain}
@@ -76,29 +89,36 @@
 
 \input{Chapters/abstract}
 \clearpage
-\newpage
+\NewPage
+
+\titleformat{\chapter}
+    {\normalfont\Huge\bfseries}{\thechapter}{1em}{}
 
 \input{Chapters/introduction}
 \clearpage
-\newpage
+\NewPage
 
 
 
 \input{Chapters/soa}
 \clearpage
-\newpage
+\NewPage
 
 \input{Chapters/design}
 \clearpage
-\newpage
+\NewPage
 
 \input{Chapters/implementation}
 \clearpage
-\newpage
+\NewPage
+
+\input{Chapters/evauation}
+\clearpage
+\NewPage
 
 \input{Chapters/conclusions}
 \clearpage
-\newpage
+\NewPage
 
 % Bibliography
 \printbibliography[heading=bibintoc, title={References}]

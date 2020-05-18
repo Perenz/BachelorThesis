@@ -1,14 +1,58 @@
 \chapter{State of the Art}
-This section and its subsections could change significantly.
+This chapter presents the current state of the art regarding insights extraction on social media.
+Many aspects of online users have been explored in order to profile customers.
+"Then, there is a focus on what has been done in terms of providing actionable personality insights."
 
-This chapter presents the current state of the art regarding insights extraction on social media. First of all, it is shown what research has achieved concerning Social Media Analysis.
-Following, it is explained how these aforementioned analyses have been used in dealing with psychometric profiling of online users.
-Finally, there is a focus on what has been done in terms of providing actionable personality insights.
+%II
+Some studies aimed to identify clear demographic characteristics based on both the analysis of a user's activities and her network inside the social media. 
+Twitter is commonly used for the extraction of gender \cite{miller2012gender}, age or age groups \cite{culotta2015predicting}.
+Also, a person's family status is inferred through the detection of life events such as the birth of a child and a marriage \cite{dickinson2015identifying}.
 
+
+%III
+The literature also presents many examples of latent attributes extraction.
+Some of the most remarkable research has been carried out by the \emph{World Well-Being Project} \footnote{https://wwbp.org/}; a research center which used 
+social media to measure attitudes and personal characteristics such as optimism and pessimism \cite{ruan2016finding}, temporal orientation \cite{schwartz2015extracting}.
+Many different social networks have been explored as well as many aspects that are not limited only to text but also include images and social interactions.
+Finally, it is a common practice inferring behaviour through a variety of personality models.
+
+%IV
+However, what has been done is almost completely focused only on the feasibility of extracting attitudes' insights from online activities rather than a commercial use of the obtained information to generate a marketing advantage.
+So, the literature presents only a few systems which satisfy the right requirements for an application in the real world, such as those imposed by the GDPR TODO CITE.
+
+\section{Customers Profiling}
+A precise and detailed description of social media users requires the analysis of many aspects of social media. 
+Indeed, understanding the users means being able to quantify and qualify how they present themselves \cite{schwartz2013personality}.
+
+Many of the systems proposed for social media analysis use as fundamental component features that describe interactions of users, such as the number of followers, mentions, likes, and comments.
+%Questa analisi di interaction è stata esplorata molto, partendo da solo numeri statici, all'osservazione dinamica della rete...
+This type of analyses has been largely explored since studies about user influence and social engagement. First, raw measures publicly available on social media were used to calculate metrics to represent effectively the user's influence \cite{oviedo2014metric}.
+Further research proved that simply observing ground numbers of a profile can lead to a misunderstanding. Cha stated that the indegree alone (number of followers) reveals little and suggested to consider shares and mentions from other users \cite{cha2010measuring}.
+D. Romero et al. observed influence analysing the propagation of web links over time using both the structural properties of the network as well as the diffusion behaviour among users \cite{romero2011influence}. They also regarded the \emph{passivity of a user}, a measure of how difficult it is for other users to influence him, and used it to weigh the tweets propagation network. 
+%Cambia da social a social a seconda di unilaterale o bilaterale
+Many different networks can be explored on social media in order to identify influence, communities, and trend topics applying the myriad of network concepts and analyses such as degree centrality and modularity \cite{chae2015insights}. 
+The nature of these graphs can change regarding the platform's characteristics and the aspect we are looking at. Li complained about undirected networks, such as the Facebook friends graph and proposed a method based on the \emph{Share/Reply/Mention} directed network to capture user influence \cite{li2014social}.
+These observation are usually used to profile a person's social environment and to assess his or her role inside it. 
+
+%Dopo di che, si ha iniziato a fare analisi del contenuto
+%Prima con hashtag e url, poi con altri servizi
+A second fundamental point carried out by literature on social media is the analysis of the context the user is talking about.
+Obviously, being aware of what topics drive someone's interactions is essential to profile his or her interest. 
+Moreover, they can be used to reduce other types of analyses to a specific field of interest. For example, focussing on users' influence in sports discussions.
+To understand context, it is necessary to observe the content of the messages which is usually composed by text and images or videos.
+Firstly, keywords in the activities were used to identify topics \cite{cha2010measuring}. This methodology shows some clear issues, especially when used for social media when messages tend to be extremely abbreviated through acronyms and slang words.
+Other approaches, feasible in a limited number of platforms, proposed to use most used hashtags to obtain linguistic content starting from the activities \cite{pennacchiotti2011machine}.
+Finally, a more general technique is using the tree of Wikipedia categories to characterize the user's interests. 
+This method fits well with both text and multimedia content thanks to a number of services that apply semantic analysis techniques to extract relevant entities \cite{torrero2018wikipedia}. 
+
+\section{Personality insights}
 "Psychometric profiling is the process by which your actions are used to infer your personality."
 
-\section{Social media analysis}
-\section{Psychometric Profiling}
-\section{Personality insights}
+The analyses listed before are essential when it comes to the extraction of behavioural insights. We can understand how a person behave and react to external stimuli
+Furthermore, studies have shown a strong correlation between discussed topics and personality aspects.
+
+%Most studies are carried out on Twitter
+
 Far vedere diversi tipi di analisi fatti per la personalità
 Poi dire che molti si basano sul big5 e far vedere quelli sull'MBTI
+\section{Commercial applications}
