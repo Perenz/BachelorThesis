@@ -32,7 +32,7 @@ D. Romero et al. observed influence analysing the propagation of web links over 
 %Cambia da social a social a seconda di unilaterale o bilaterale
 Many different networks can be explored on social media in order to identify influence, communities, and trend topics applying the myriad of network concepts and analyses such as degree centrality and modularity \cite{chae2015insights}. 
 The nature of these graphs can change regarding the platform's characteristics and the aspect we are looking at. Li complained about undirected networks, such as the Facebook friends graph and proposed a method based on the \emph{Share/Reply/Mention} directed network to capture user influence \cite{li2014social}.
-These observation are usually used to profile a person's social environment and to assess his or her role inside it. 
+These observations are usually used to profile a person's social environment and to assess his or her role inside it. 
 
 %Dopo di che, si ha iniziato a fare analisi del contenuto
 %Prima con hashtag e url, poi con altri servizi
@@ -45,12 +45,20 @@ Other approaches, feasible in a limited number of platforms, proposed to use mos
 Finally, a more general technique is using the tree of Wikipedia categories to characterize the user's interests. 
 This method fits well with both text and multimedia content thanks to a number of services that apply semantic analysis techniques to extract relevant entities \cite{torrero2018wikipedia}. 
 
-\section{Personality insights}
+\section{Behavioural insights}
 "Psychometric profiling is the process by which your actions are used to infer your personality."
 
-The analyses listed before are essential when it comes to the extraction of behavioural insights. We can understand how a person behave and react to external stimuli
-Furthermore, studies have shown a strong correlation between discussed topics and personality aspects.
+The previous analyses play a crucial role in customer profiling, especially in the extraction of attitudes and behaviours.
+Indeed, understanding a user's network helps understand how he or she reacts to external stimuli. Also, studies have shown a strong correlation between discussed topics and personality aspects of a person \cite{kern2016gaining}.
 
+The literature presents many different techniques for the extraction of behavioural information which are all based on the most used personality models to study specific traits of an individual.
+The models proposed are classifiers or regression one depending on which personality taxonomy is being applied.
+Each model is specialized to a single specific personal characteristic, for example, using the MBTI personality model there are 4 classifiers, one for each cognitive function.
+Almost all models presented work on social user composed by the totality, or a portion, of their timeline rather than single activities since linguistic information contained by a single short activity is not enough to accurately predict personality aspects \cite{mairesse2007using}.
+
+The feature extraction shares some fundamental aspects in the majority of systems. Social features are commonly present in every model.
+Some studies just include basic information such as the number of followers, following or friends, the number of activities, and their frequency \cite{quercia2011our}. Over time, the literature presented the application of more complex features, obtained as results from further analysis of the user's network such as interaction patterns by a person towards the author of the post \cite{dickinson2015identifying}.
+For example, significative patterns could be a high retweet ratio by users who do not retweet much other sources by or an elevate number of interactions by users with many followers. However, these last observations need the permission of each person belonging to the analysed network to be respectful of GDPR requirements. Thus, even though they could give great results, their application in the market is quite intricate.
 %Most studies are carried out on Twitter
 
 Far vedere diversi tipi di analisi fatti per la personalità
