@@ -48,18 +48,28 @@ This method fits well with both text and multimedia content thanks to a number o
 \section{Behavioural insights}
 "Psychometric profiling is the process by which your actions are used to infer your personality."
 
-The previous analyses play a crucial role in customer profiling, especially in the extraction of attitudes and behaviours.
-Indeed, understanding a user's network helps understand how he or she reacts to external stimuli. Also, studies have shown a strong correlation between discussed topics and personality aspects of a person \cite{kern2016gaining}.
-
 The literature presents many different techniques for the extraction of behavioural information which are all based on the most used personality models to study specific traits of an individual.
 The models proposed are classifiers or regression one depending on which personality taxonomy is being applied.
 Each model is specialized to a single specific personal characteristic, for example, using the MBTI personality model there are 4 classifiers, one for each cognitive function.
 Almost all models presented work on social user composed by the totality, or a portion, of their timeline rather than single activities since linguistic information contained by a single short activity is not enough to accurately predict personality aspects \cite{mairesse2007using}.
 
-The feature extraction shares some fundamental aspects in the majority of systems. Social features are commonly present in every model.
-Some studies just include basic information such as the number of followers, following or friends, the number of activities, and their frequency \cite{quercia2011our}. Over time, the literature presented the application of more complex features, obtained as results from further analysis of the user's network such as interaction patterns by a person towards the author of the post \cite{dickinson2015identifying}.
-For example, significative patterns could be a high retweet ratio by users who do not retweet much other sources by or an elevate number of interactions by users with many followers. However, these last observations need the permission of each person belonging to the analysed network to be respectful of GDPR requirements. Thus, even though they could give great results, their application in the market is quite intricate.
-%Most studies are carried out on Twitter
+The feature extraction shares some fundamental aspects in the majority of systems. The results of the analysis seen before represent two essential groups.
+Indeed, understanding a user's network helps understand how he or she reacts to external stimuli. Therefore, it plays a crucial role in the extraction of behavioural insights from online activities.
+Also, research has shown a strong correlation between discussed topics and personality aspects of a person \cite{kern2016gaining}.
+Guntuku et al. proved that studying semantic concepts contained in posted images can give a significant performance gain in predicting personality traits with respect to the \emph{Big Five model} \cite{guntuku2017studying}.
+However, the literature contains a very few number of proposals that considered the content of the activity and are usually confined to hashtags and key words in the text \cite{ruan2016finding}. 
+
+Regarding features that describe the social presence of a person. These are usually included by the majority of models. Although some are limited to basic information such as the number of followers, following or friends, the number of activities, and their frequency \cite{quercia2011our}.
+Over time, the literature presented the application of more complex features, obtained as results from further analysis of the user's network such as interaction patterns by a person towards the author of the post \cite{dickinson2015identifying}.
+For example, significative patterns could be a high retweet ratio by users who do not retweet much other sources by or an elevate number of interactions by users with many followers. However, these last observations need the permission of each person belonging to the analysed network to be respectful of GDPR requirements. Thus, even though they could give great results, their lawful application in the market is quite intricate.
+
+Then, there is a third fundamental group of features which is probably the most important one.
+Since psychological studies proved that there is an effective relationship between linguistic style and personality aspects, understanding detailly how an individual writes is a crucial step \cite{pennebaker1999linguistic}.  
+Some of the most common and basic features are word counts, sentences per activity, word per sentence, and punctuation count. These have been applied by the majority of models with great results in many different environments.
+For example, Farnadi recognized personality of YouTube vloggers using the script of their videos to extract this linguistic information \cite{farnadi2014multivariate}.
+Furthermore, more recent studies have tested features from specialized and complex tools for text analysis. These can reveal precisely thoughts, feelings, and motivations of the text's author.
+The \emph{Linguistic Inquire and Word Count (LIWC)} developed by Tausczik and Pennebaker is certainly the most used one \cite{tausczik2010psychological}.
+Other services that have been tested are the \emph{MRC Psycholinguistic Database} and the \emph{NLPRO}, developed by oNLPLAB \cite{wilson1988mrc, tsarfaty2018natural}. Lima et al. tested the three of them concluding with the first one as the most performing one \cite{lima2019tecla}
 
 Far vedere diversi tipi di analisi fatti per la personalità
 Poi dire che molti si basano sul big5 e far vedere quelli sull'MBTI
