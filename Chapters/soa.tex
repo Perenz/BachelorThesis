@@ -18,7 +18,7 @@ Finally, it is a common practice inferring behaviour through a variety of person
 
 %IV
 However, what has been done is almost completely focused only on the feasibility of extracting attitudes' insights from online activities rather than a commercial use of the obtained information to generate a marketing advantage.
-So, the literature presents only a few systems which satisfy the right requirements for an application in the real world, such as those imposed by the GDPR TODO CITE.
+So, the literature presents only a few systems which satisfy the right requirements for an application in the real world, such as those imposed by the GDPR\footnote{\url{https://gdpr.eu/}}.
 
 \section{Customers Profiling}
 A precise and detailed description of social media users requires the analysis of many aspects of social media. 
@@ -49,8 +49,12 @@ This method fits well with both text and multimedia content thanks to a number o
 "Psychometric profiling is the process by which your actions are used to infer your personality."
 
 The literature presents many different techniques for the extraction of behavioural information which are all based on the most used personality models to study specific traits of an individual.
-The models proposed are classifiers or regression one depending on which personality taxonomy is being applied.
-Each model is specialized to a single specific personal characteristic, for example, using the MBTI personality model there are 4 classifiers, one for each cognitive function.
+Each model is specialized to a single specific personal characteristic. The models proposed are classifiers or regression one depending on which personality taxonomy is being applied.
+%Qui alcuni esempi su mbti e big 5
+The Big Five model is the most spread the most used one for the automatic extraction of personal attitudes. Commonly, each one of the five traits composes a regression task because of their continuous nature \cite{kosinski2013private}
+Even though, Sumner experimented a binary classification for each aspect using as classes the two extremes of the trait \cite{sumner2012predicting}.
+On the other hand, the MBTI model requires the application of binary classifiers. Generally, each cognitive function is inferred separately since it has been showed that multi-class classification on the sixteen personality types bring to poor performance \cite{lima2019tecla}
+Also, a few studies worked on characteristics that do not belong to any personality model. For example, researchers from the World Well-Being Project explored Facebook and Twitter to infer optimism, pessimism, empathy, and trustfulness \cite{ruan2016finding,abdul2017recognizing,zamani2018predicting}
 Almost all models presented work on social user composed by the totality, or a portion, of their timeline rather than single activities since linguistic information contained by a single short activity is not enough to accurately predict personality aspects \cite{mairesse2007using}.
 
 The feature extraction shares some fundamental aspects in the majority of systems. The results of the analysis seen before represent two essential groups.
@@ -69,8 +73,35 @@ Some of the most common and basic features are word counts, sentences per activi
 For example, Farnadi recognized personality of YouTube vloggers using the script of their videos to extract this linguistic information \cite{farnadi2014multivariate}.
 Furthermore, more recent studies have tested features from specialized and complex tools for text analysis. These can reveal precisely thoughts, feelings, and motivations of the text's author.
 The \emph{Linguistic Inquire and Word Count (LIWC)} developed by Tausczik and Pennebaker is certainly the most used one \cite{tausczik2010psychological}.
-Other services that have been tested are the \emph{MRC Psycholinguistic Database} and the \emph{NLPRO}, developed by oNLPLAB \cite{wilson1988mrc, tsarfaty2018natural}. Lima et al. tested the three of them concluding with the first one as the most performing one \cite{lima2019tecla}
+Other services that have been tested are the \emph{MRC Psycholinguistic Database} and the \emph{NLPRO}, developed by NLPLAB \cite{wilson1988mrc, tsarfaty2018natural}. Lima et al. tested the three of them concluding with the first one as the most performing one \cite{lima2019tecla}
 
-Far vedere diversi tipi di analisi fatti per la personalità
-Poi dire che molti si basano sul big5 e far vedere quelli sull'MBTI
-\section{Commercial applications}
+%Qualche riga sui diversi ambiti 
+%As said before, the extraction of personality insights is being applied on many different media.
+\section{GDPR Compliance}
+A big issue that emerged recently in dealing with user profiling is the new regulation adopted by the European Union (EU) on the protection of personal data of individuals.
+The \emph{General Data Protection Regulation (GDPR)} became enforceable in May 2018 after being adopted in April 2016. Its validity spread around the European Economic Area.
+It threats the privacy of natural persons with particular regard to the processing of personal data and on the free movement of such data outside the EU area.
+A goal of the GDPR is to harmonise the rules for all the Member States in order to reduce the legal complexities and uncertainties and to reinforce the data subjects' rights.
+However, it is a regulation and not a directive. Therefore, even though it has to be applied, it provides flexibility for certain aspects to be adjusted by singular Member States
+
+
+The GDPR does not completely truncate the freedom of business for the benefit of the single person. It aims to balance the right of the physical individual and the right to do business of the enterprise.
+Its rules are valid for businesses, also called juridical people, which treats personal data with market and professional purposes.
+%What define the GDPR, quando p legale, trattamento, principi
+The GDPR rules how data shall be processed. Firstly, it specifies that data processing is lawful when at least one out of six criteria, called lawful bases, is met. Foe example, personal data can be processed when the data subject give consent to specific processing or when data processing represents a vital interest for the person.
+Then, the regulation define a list of fundamental principles about the processing of personal and sensitive data \cite{voigt2017eu}. The principle of \textbf{purpose limitation} impose the formal definition of each singular purpose of the treatment and the corresponding legal basis.
+The principle of \textbf{data minimisation} states that only data strictly necessary for the final purpose should be collected and should not be further used for reasons that were not stated.
+Finally, data is required to be \textbf{accurate}. Data that is inaccurate or incomplete must be erased or rectified.
+
+
+The GDPR also considers scientific research as a specific context of personal data processing. Here, the equilibrium between individual freedom and the freedom of research must allow both personal data processing and sharing in the pursuit of the public interest. 
+So, even though some specific rules are applied more liberally to scientific research, the general principles must be respected.
+However, the literature does not contain significant studies that considered the limitations imposed by this regulation.
+The GDPR is mentioned rarely probably because the majority of the research focuses more on performance aspects of the the result, such as its reliability and accuracy rather than the application of the result itself for commercial purposes which would require a strict compliance of the previous requisites.
+
+%However, in the literature is not rarely mentioned...
+
+%What is the GDPR: personal data and treatment
+%Why it is not considered (studies focus on research porpuses rather than commercial applications + recent + Europe)
+%Some studies that mention it
+%Requirements, data minimization, data access
