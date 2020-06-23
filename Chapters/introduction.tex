@@ -30,13 +30,6 @@ It aims to provide companies with the ability to extract readable and valuable i
 The final goal is to make available actionable insights about users' behaviour, demographics and attitudes.
 In particular, this dissertation focusses on the extraction of personality traits to obtain a detailed description of a person's behaviour and reaction to a number of observed solicitations
 
-
-
-\section{Customer insights}
-\textbf{General introduction to customer insights, different types, benefit for businesses}
-
-\textbf{At the end, a short focus on psychometrics}
-
 \section{Extraction of personality models}
 According to neuroscientists Adelstein et al., personality describes human behavioural responses to wide classes of external stimuli \cite{adelstein2011personality}. It works as an adaptive system for taking in, organizing information and driving the response to inner and outside demands \cite{block2002personality}.
 The parameters of the adaptive system represent the variation of the same from person to person and, therefore, characterize uniquely every individual. These parameters are also referred to as personality traits in several different personality models studied over the years.
@@ -81,8 +74,14 @@ The third cognitive function is that of decision-making which can be thinking (T
 Finally, there is the lifestyle preference function dichotomy, judging (J) or perceiving (P). Judging types like the outside world to be structured; according to Myers, they prefer to ``have maters settled''. On the contrary, perceiving personalities like it flexible and spontaneous and tend to ``keep decisions open'' \cite{myers2010gifts}.
 There are 16 different types of personality given by the combination of these 4 cognitive functions identified by 4-characters codes such as ``INFJ'' or ``ENFP''.
 
+\section{Research objectives}
+Extraction of behavioural insights from social media has recently attracted the attention of both researchers and businesses.
+Even though the latter has released a couple of solutions, these fit better for personal and psychological use rather than a commercial one.
+The main objective of this thesis is to design and develop a solution that can be used by a company to personalize customer experience with respect to individual abstract preferences.
+Therefore, the question it answers is: \textit{is it possible to understand costumers behaviour from their online profiles and activities?.}
+
 %ML Problem
-Using a categorical model, the extraction of personality from social media activities is a \textit{machine learning} problem, precisely, it consists of numerous classification tasks, one for each of the four variables.
+Using a personality model to catch these behavioural aspects, the extraction of personality from social media activities is a \textit{machine learning} problem. Precisely, with a categorical model, such as the MBTI, it consists of numerous classification tasks, one for each variable of the taxonomy.
 Machine learning is one of the most talked-about fields of computer science and many sources give their own definition. Basically, ML deals with allowing a computer system to ``learn with data, without being explicitly programmed" \cite{samuel1959some}.
 It has been applied in many contexts, such as decision making, optimization problems, forecasts, and predictions.
 Nowadays, we face ourselves with machine learning in everyday life: home assistants, security surveillance, music and shopping suggestions, customer services are strongly powered by artificial intelligence.
@@ -98,12 +97,7 @@ f & \colon \boldsymbol{x} \mapsto y
 where $C$ is a set of possible categories.
 For example, in one of the four classifiers for this problem, $ \boldsymbol{x} $ represents a user and her activities on the social media, and $C = \{\text{\texttt{Introvert}, \texttt{Extrovert}}\}$
 
-\section{Research objectives}
-Extraction of behavioural insights from social media has recently attracted the attention of both researchers and businesses.
-Even though the latter has released a couple of solutions, these fit better for personal and psychological use rather than a commercial one.
-The main objective of this thesis is to design and develop a solution that can be used by a company to personalize customer experience with respect to individual abstract preferences.
-Therefore, the question it answers is: \textit{is it possible to understand costumers behaviour from their online profiles and activities?}
-
+%GDPR Problem
 The designed system should be able to work with numerous social media platforms to have a wide variety of data sources.
 Finally, the principal aspect that it must always satisfy is the \emph{ability to use the result}. Indeed, extracted insights need to be actually actionable, directly by the marketing department or in conjunction with further analysis, to represent a competitive advantage.
 \section{Outline}

@@ -1,3 +1,123 @@
 \chapter{Design and methodology}
-\section{Components logic}
+This chapter presents the architecture of the system. Starting with a basic schematic view, it is showed what fundamental components compose it, their role, how they work and how they communicate each other.
+%Then description of specific choiches
+Then, the architecture is detailed more. Each step, starting with the download of raw activities and ending with the final user's attitudes, is described specifying what choices have been done and why.
+
+At a high level, the system takes as input an ID representing a user in the system.
+This user is associated with many IDs, one for each social network he or she is registered in and has provided access to.
+These are used to download her profiles which, together with their respective activities, are used to classify the user's behavioural aspects included in the analysis.
+
+\section{Requirements}
+The main functional requirement is that the system has to be able to extract a set of behavioural aspect that characterise the user taken as input.
+All the social network the user has registered must be analysed for both the social profile and the activities.
+The architecture should allow the addition of new users into the system and the removal of existing ones. Then, once a system user is created, it must be possible to register and remove new social media account.
+During the download of new activities, the system should let use a filter or a counter to exclude unnecessary activities.
+Finally, the set of attitudes that can be classified must be defined a priori. For example, it can be equal, but not limited, to the 4 cognitive functions of the MBTI previously introduced.
+
+\section{Process logic}
+Here, the fundamental process followed by the system is introduced.
+Each step covers a section of the process required to go from the simple user ID to the final insights that the system aims to provide.
+The whole flow is sequential. Each activity takes as input the output of the previous one
+There are 4 essential steps which can not be excluded despite specific design choices:
+\begin{enumerate}
+    \item Download profiles and activities from social networks.
+    \item Analyse the downloaded data to extract significant features.
+    \item Classify the profiles.
+    \item Put together the partial results from each classifier to generate the complete user image.
+\end{enumerate}
+The steps are executed the same number of times and each one immediately follows the previous one with the requirement that the former must have ended for the latter to start.
+The only exception can be found for the first two activities which could be grouped together. Indeed, once an activity is downloaded this could be immediately sent to the following action while a new one is put on download.
+However, before the classification could be performed the whole profiles should be completely downloaded and analysed.
+Finally, the final result can be stored. So, all the process is coordinated by a single call which start with the download phase and end the annotated user.
+
+%This steps describe abstractally the flow followed by the system
+%These functionalities are later in different components which purpose is to follow this process.
+These steps give a general description of all the jobs required to go from the raw user identifier to its classification.
+These functionalities are subsequently realized thanks to different components with the purpose of following this abstract process.
+The final components of the system may vary according to the architectural choices made.
+
+\section{Classificator's architecture}
+While the first two steps are quite common and do not present significant choices that could modify the system, the third one deserve to be observed in more detail.
+In the extraction of insights at user level, it is essential to understand precisely how the social user is defined and by what data it is characterised.
+The state of the art rarely took into consideration different approaches. Usually, all the information obtainable by the totality of the activities downloaded are put together to represent the user ready to be classified.
+It means that, at each request, all the downloaded activities are merged into a single user that summarise what has been provided by the social media.
+At first, a solution of this type might work if the goal is to verify the feasibility of a specific classification in order to be able to measure its performance quickly and easily.
+On the other hand, when it comes to the production environment, this technique presents some evident lacks that need to be considered.
+For example, one main issue concerns TODO %The integration of the result once new activities are posted. We don't want to recompute entirely the profile
+
+Starting from this last problem I worked on three different alternatives. These three proposals are the feasible solutions that answered to a series of questions and critical points that emerged during this design process. 
+\begin{itemize}
+    \item Architecture \textbf{per aggregation}: the classification is performed on the so-called user aggregates. User aggregates represent the totality of the feature extracted by the profile and its activities. In the moment new activities are downloaded from the social profile, the previous aggregates are updated and then stored ready for the classifications.
+    \item Architecture \textbf{per activities}: each activity is classified singularly. Instead of the features, the result of each activity is stored and then put together to generate the insight at a user-level.
+    \item Architecture \textbf{per batch}: the classification is performed on the aggregates obtained from a batch of activities. Batches are disjoint sets of downloaded activities. Each is classified independently and its result is stored. These partial results of a specific user are merged together to get the final result. 
+\end{itemize}
+
+I evaluated and compared these three alternatives against six criteria considered fundamental with respect to the initial research question.
+The six bases are: computation complexity, result's accuracy, GDPR compliance, result's flexibility, storing, and scalability.
+
+\subsection{Computation Complexity}
+The performance of each propose strictly depends on the trade-off between a single classification and the aggregation of features from many activities.
+Assume that the cost of a single classification is equal to the number of features M, $\Theta(M)$.
+Estimate now, for each solution, the computational complexity of the download of N activities and the user's classification.
+Firstly, It must be noticed that the first two steps of the process, the activities download and their analysis, are not affected by the architectural choice. Therefore, to keep everything clearer, their contribution will be omitted from the following estimations.
+
+Assuming that the aggregation algorithm just iterate on each post of the timeline a single time observing each one of the M extracted features. So, its computational cost is $\Theta(N*M)$.
+As already said, Using user's aggregates implies to compute the classification on its totality at every request to the system. So, this method's complexity considers the number R of requests which is obviously constantly growing. 
+It can be formalized as \textbf{$\Theta(N*M) + \Theta(M*R)$}.
+
+Regarding the second alternative, while it is no longer necessary to aggregate the analysis of each activity, it is required to merge together each singular result in order to obtain the final insight.
+Moreover, the classification is performed N times on the exact number M of features.
+So, the complexity of the solution activity-based is \textbf{$\Theta(N*M) + \Theta(N)$}.
+
+To analyse the last solution, the batch-based one, it is not necessary to define how batches are composed in detail.
+The N downloaded activities are somehow partitioned into B batches with $B \leq N$.
+Each batch's content is aggregated with the same algorithm introduced before. In general, it is not important how many batches there are, the aggregator will still work on M features of the N activities.
+Finally, the B batches are classified singularly and their results are then joined together.
+So, the complexity is \textbf{$\Theta(N*M) + \Theta(B*M) + \Theta(B)$}.
+
+To conclude, since the architecture aggregation-based considers in its formula the number of request to the system, it is not scalable in terms of increasing loads.
+On the other hand, the other two alternatives are computationally similar. The differences between the two stay in the number of classifications done and the final aggregation of partial results.
+
+\subsection{Accuracy of the result}
+Regarding the final result obtained by each of these three methods, even though it would be better to carry out a detailed evaluation process, some general observation can be done without any implementation test.
+
+Starting with the architecture per batch, user aggregates are easy to calculate since they generally consist in the sum of many values or in their average. Thus, they are precise and represent correctly the user's values.
+However, even though until now I have been talked only about features extracted by the online activities of the user, other useful information is represented by that related to the social profile. For example, fields such as the number of followers, that of people followed, the user's location, and many other help describing the individual, her social presence and connections.
+In this case, at every download request, this information contained in the user aggregate is updated with the new one. Consequently, the snapshot of the old status is lost.
+This means that the activities are not associated with the exact moment they were written but they all treated the same way without differentiating the social situation of the user.
+
+This last issue is partially solved by the activity-based methodology because in the features used to classify each activity can be included that information about the social user.
+However, this data is taken in the moment the social network's API are consulted so it is not perfectly accurate for each post but it can represent a good approximation.
+On the other hand, this alternative involves two major obstacles. Firstly, it has been proved that, especially in the case of psychological studies, text represent the first source of information. Typically, on the social media users tend to write short posts composed by just a pair of sentences. 
+Thus, what has been argued is that the quantity and the quality of the extracted features do not allow a precise classification of behavioural aspects.
+Secondly, once every single activity is classified, they must be merged together to generate the user's insight.
+In the case of categorical results it is not clear how singular results should be merged and how each one should be weighted with respect to the others.
+
+Finally, the architecture per batch has the same advantage of the one per activities because each batch would be characterised by the features that describe the social status of the user.
+So, each batch of activities, depending on when its was downloaded, includes some data describing that information mentioned before.
+Moreover, the problems of the previous technique here are less pronounced. Indeed, batches can include the right number of activities in order to get the right amount of features.
+Also, during the aggregation of partial results, each one could be weighted both dimensionally and temporally giving so more freedom to adapt the implementation.
+
+
+\subsection{GDPR Compliance}
+Design a system that respect the last regulations about the protection of personal data is one of the goals of this thesis.
+In this design phase, some requisites from the GDPR emerged as crucial aspects. In this chapter it is explained how the three different architectures satisfy or not the requisite of data minimisation and that of data accuracy already introduces in chapter 2 "State of the Art".
+
+Starting as always from the solution per aggregation, it implies to store the user aggregates so that they can be updated or classified whenever the user wants.
+Even though this data is composed by the relative features extracted from the activities and not by the activities themselves, they still contain personal and sensitive that need to be protected.
+Then, as discussed is the previous section, info about the social status are unique and dated to the last upload so they are less accurate with respect to the whole timeline.
+
+Using one of the other two alternatives, the situation changes markedly because they do not require to store the activities nor the extracted features. It is enough to memorise all the partial results and some descriptive information, such as the number of activities and their date, in order to be able to join them together.
+The solution activities-based, compared to the last one, brings more profit with respect to the accuracy issue. Indeed, it gives the opportunity to complement every single activity with the social status in the moment it was posted while batches still implies a minimum approximation.
+
+\subsection{Flexibility of the result}
+This small chapter gives a focus the benefit regarding the result's flexibility rather than a criteria that need to be met.
+%Cosa intendi con result flexibility
+
+%Solite tre opzioni
+
+%Capitolo nuovo
+
+%Mentre le prima due attività sono "ordinarie", dalla terza si possono effettuare diverse scelte 
+%Ho analizzato tre diverse opzioni effettuandone un analisi qualitativà per decidere quale fosse la scelta migliore
 \section{Algorithms}
