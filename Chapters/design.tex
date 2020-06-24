@@ -79,7 +79,7 @@ To conclude, since the architecture aggregation-based considers in its formula t
 On the other hand, the other two alternatives are computationally similar. The differences between the two stay in the number of classifications done and the final aggregation of partial results.
 
 \subsection{Accuracy of the result}
-Regarding the final result obtained by each of these three methods, even though it would be better to carry out a detailed evaluation process, some general observation can be done without any implementation test.
+Regarding the final result obtained by each of these three methods, even though it would be better to carry out a detailed evaluation process, some general observations can be done without any implementation test.
 
 Starting with the architecture per batch, user aggregates are easy to calculate since they generally consist in the sum of many values or in their average. Thus, they are precise and represent correctly the user's values.
 However, even though until now I have been talked only about features extracted by the online activities of the user, other useful information is represented by that related to the social profile. For example, fields such as the number of followers, that of people followed, the user's location, and many other help describing the individual, her social presence and connections.
@@ -111,13 +111,104 @@ Using one of the other two alternatives, the situation changes markedly because 
 The solution activities-based, compared to the last one, brings more profit with respect to the accuracy issue. Indeed, it gives the opportunity to complement every single activity with the social status in the moment it was posted while batches still implies a minimum approximation.
 
 \subsection{Flexibility of the result}
-This small chapter gives a focus the benefit regarding the result's flexibility rather than a criteria that need to be met.
-%Cosa intendi con result flexibility
+This small chapter gives a focus on the benefits regarding the result's flexibility rather than criteria that need to be met.
+Depending on this architectural choice the system could allow the composition of the final results with different options. For example, by taking into consideration only a subset of the whole user's timeline
 
-%Solite tre opzioni
+Using the user aggregates, it is quite difficult to act on the final result once it has been classified.
+Indeed, the result is the direct output of the subset of aggregates the classification algorithm uses. So, the only way to affect the result is by working on these aggregates which include the whole timeline and are unique for each user.
+%Quindi l'unico modo per "filtrare" l'input del clasificatore sarebbe quello di riscaricare ed analizzare nuovamente solo le attività che rispettano il filtro desiderato
+
+The architecture activities-based is for sure the one with the highest flexibility. Indeed, it is immediate excluding some activities that do not meet a specific requirement.
+For example, it would be possible to compute the user only for her social presence during the summer periods or during the weekends. 
+So, memorising a flag together with the result would be enough to subsequently filter the final result.
+These flags are not limited only to datetime aspects. For instance, they can be used to differentiate posts that talk about sports from those that talk about politics.
+
+With the solution based on batches, it becomes possible to treat each batch differently. It all depends on how the batches are composed.
+For example, batches that cover specific time periods give the opportunity to observe temporal variations. Then, they could be filtered depending on a exact term.
+Also, each batch can be normalized regarding the number of activities it contains in order to weigh its contribute on the final result.
+
+
+\subsection{Storing}
+Here is briefly discussed where, in the system, data persistence needs to be implemented
+Then, it is observed how the data model affects the system and, in particular, its evolution.
+
+To compute the user aggregates, persistence must be implemented on the component that perform the aggreagation so that they can be updated at every new download.
+Then, the results of the classifications need to be stored. Also, the activities collector should know which is the last activity downloaded for each user in order to not count them multiple times.
+The features the system memorise are always known a priori depending on what classifications the system performs. Consequently, the removal or the addition of some features, for example to improve or add a new model, involve adapting the whole data model and the download of the whole user's timeline.
+
+For the other two proposals, it is necessary to have data persistence on the component that deals with the classifications so that the result of each batch or activities can be stored.
+Obviously, the activities collector always need to know which is the last downloaded post.
+It is quite immediate to add new services at the system since the features extracted do not need to be memorised but are immediately used from the next component. So, the data model is affected only on the result aspect in the case new classifications are added.
+
+\subsection{Scalability}
+This last aspect does not vary much from one solution to another. All three architectures allow the parallelization of the independent classifiers.
+In addition, for the two architectures based on multiple classifications, these can be parallelized since both each batch and each activity are independent of the others.
 
 %Capitolo nuovo
 
-%Mentre le prima due attività sono "ordinarie", dalla terza si possono effettuare diverse scelte 
-%Ho analizzato tre diverse opzioni effettuandone un analisi qualitativà per decidere quale fosse la scelta migliore
-\section{Algorithms}
+\section{Components's logic and interaction}
+After this analysis, it was decided to focus on the third proposal, the batch-based architecture.
+The one based on the user aggregates is quite basic has several shortcomings in many of the observed aspects.
+The other two share many advantages but regarding the accuracy of the result, the activity-based solution has some complications not included on the other one.
+However, as said before, that aspect was analysed through general observations and testing both the architecture would give a more detailed overview.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=%
+    0.95\textwidth,height=10cm,keepaspectratio]{img/components}
+    \caption{The architecture components}
+    \label{fig:components}
+\end{figure}
+
+In this section, the architecture is decomposed into its components. Each component works on the input of the previous one to carry out a step of the whole process described previously.
+Totally, 5 components have been identified: activities collector, features extractor, user aggregator, classifiers and the insight generator. They are shown in Figure~\ref{fig:components}:
+
+
+Next, the logic of each component is provided, illustrating what each one does, its input, and output.
+
+\subsection{Activities collector}
+This part deals with the downloaded of user's content from social networks through the services offered by the public APIs of each platform.
+The data includes information about the user, such as social name, number of followers and friends, location, and then her activities.
+An activity is usually characterised by some text, optional attachments such as media or files, a creation date, the number of likes, shares and comments, and, sometimes, information derived from the geolocation.
+
+This component takes as input a list of IDs, one for each social network connected to the user, that identify all her profiles. Some social media, like Facebook and Instagram, also require an access token necessary, together with the user ID, to consult, through the API, the content of that profile.
+These tokens are released directly at the organization that is handling the user authorization.
+
+For each social network, the system need to know at which point the data has been previously downloaded. Usually, the IDs identifying the posts are ordered and the API allows you to specify the point the download should start from using an ID.
+As output, the components returns a social profile composed by significant user's information and the list of new activities. With new, it is meant all the content that was not previously downloaded by past requests.
+Finally, the last activity of the timeline is used to update the point the data has been fetched.
+
+The collector interacts with many different social networks. To do it, this service should run in a dedicated process and the communications with each platform should be parallelized.
+This is necessary because many socials provide free API plans which limit the number of requests in a given time window. So, in case one of the limits is reached, it should not cause a critical bottleneck that freezes the whole system.
+
+\begin{multicols}{2}
+\begin{verbatim}
+//input
+[
+    {
+        "socialID": 1234,
+        "userID": 8564
+    }
+]
+
+//output
+[
+    {
+        "postID": 123456,
+        "socialID": 1234
+    }
+]
+\end{verbatim}
+\end{multicols}
+
+\subsection{features extractor}
+This component works on the downloaded content to extract significant features for the following step.
+From the previous part it receives data both about the user's information and about her activities. While the first one is quite structured and does not need deep analyses, the activities carry raw texts and images which have to be processed to extract the desired information.
+First of all, the text of each activity is observed and analysed to extract significant features for the classification models, in particular for the psychological ones.
+A standard \emph{Natural Language Processing NPL} library is used. It allows to observe some superficial characteristics such as the number of sentences, words, characters, capital letters and the use of punctuation.
+Then, giving the environment we are working with, that of social media, it is important to handle properly hashtags, external links and emojis.
+The first two, as well as any mention or @tag, are usually returned by the social network's API. So, it is not necessary to extract them from the raw text.
+On the other hand, emojis are treated like any other character by the API. Therefore, they need to be parsed carefully.
+Taking care of emojis is extremely important because on social media they are abused by the majority of users and, thanks to their variety and intuitiveness, they can reveal a lot about the traits of a person.
+
+
