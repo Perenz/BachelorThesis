@@ -204,11 +204,20 @@ This is necessary because many socials provide free API plans which limit the nu
 \subsection{features extractor}
 This component works on the downloaded content to extract significant features for the following step.
 From the previous part it receives data both about the user's information and about her activities. While the first one is quite structured and does not need deep analyses, the activities carry raw texts and images which have to be processed to extract the desired information.
+
 First of all, the text of each activity is observed and analysed to extract significant features for the classification models, in particular for the psychological ones.
 A standard \emph{Natural Language Processing NPL} library is used. It allows to observe some superficial characteristics such as the number of sentences, words, characters, capital letters and the use of punctuation.
 Then, giving the environment we are working with, that of social media, it is important to handle properly hashtags, external links and emojis.
+
 The first two, as well as any mention or @tag, are usually returned by the social network's API. So, it is not necessary to extract them from the raw text.
 On the other hand, emojis are treated like any other character by the API. Therefore, they need to be parsed carefully.
 Taking care of emojis is extremely important because on social media they are abused by the majority of users and, thanks to their variety and intuitiveness, they can reveal a lot about the traits of a person.
 
+Another significant step of the natural language process is the \emph{Part-of-speech (POS)} tagging. It consists in assigning a particular part of speech,, such as nouns, verbs, and adjectives, to a specific word in the corpus.
+Doing that, it is possible to observe, for example, how much a person tends to detail her messages by using adjectives or whether someone writes in the first or third person.
+
+Then, we want to understand what the user has talked and posted about. Both text and images can be used to accomplish this goal; thanks to some external semantic analysers that can extract entities, topics, and a sentiment value.
+These services usually use the Wikipedia tree to map both entities and topics. The first set refers to every concept that has its own page on Wikipedia. Differently, a topic is a Wikipedia category.
+In the Wikipedia structure, each page can be characterised by many different categories. 
+The sentiment is returned as a label that can be \textit{negative, neutral or positive} or as an integer ranging between two values. For example, between -1 and 1 where -1 means extremely negative and 1 extremely positive.
 
