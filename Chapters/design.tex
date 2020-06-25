@@ -165,6 +165,9 @@ Totally, 5 components have been identified: activities collector, features extra
 
 
 Next, the logic of each component is provided, illustrating what each one does, its input, and output.
+For each component, it is also presented its API. Internal APIs are used by the components to facilitate and standardise their interaction.
+These components are presented as web interfaces that takes as input and returns as output JSON objects.
+Only the parameters used to identify the object itself are used. For example, a postID and a socialID are enough to indicate an activity.
 
 \subsection{Activities collector}
 This part deals with the downloaded of user's content from social networks through the services offered by the public APIs of each platform.
@@ -219,5 +222,132 @@ Doing that, it is possible to observe, for example, how much a person tends to d
 Then, we want to understand what the user has talked and posted about. Both text and images can be used to accomplish this goal; thanks to some external semantic analysers that can extract entities, topics, and a sentiment value.
 These services usually use the Wikipedia tree to map both entities and topics. The first set refers to every concept that has its own page on Wikipedia. Differently, a topic is a Wikipedia category.
 In the Wikipedia structure, each page can be characterised by many different categories. 
-The sentiment is returned as a label that can be \textit{negative, neutral or positive} or as an integer ranging between two values. For example, between -1 and 1 where -1 means extremely negative and 1 extremely positive.
+The sentiment is returned as a label that can be \textit{negative, neutral, or positive} or as an integer ranging between two values. For example, between -1 and 1 where -1 means extremely negative and 1 extremely positive.
 
+At the end, this component returns as output the same user taken as input where each of her activities has been analysed. So, each post is replaced by the list of features extracted from it.
+Every activity obviously has the same general feature names. In some cases, for example, if a text did not contain any Wikipedia entities, some may be empty but they are still contained in the returned object.
+
+The feature extraction is not limited to the analyses mentioned here. The idea is that this component should be integrable with new services and functions.
+
+\begin{multicols}{2}
+\begin{verbatim}
+//input
+[
+    {
+        "postID": 123456,
+        "socialID": 1234
+    }
+]
+    
+//output
+[
+    {
+        "postID": 123456,
+        "socialID": 1234
+    }
+]
+\end{verbatim}
+\end{multicols}
+
+\subsection{Aggregator}
+This part has to task to create a single object, characterised by a series of features, that is ready for the following classifications. It receives as input the social profile and its analysed activities.
+By simply iterating over all the activities received, it is primarily responsible for dividing them in batches and then calculating their aggregated values.
+
+The way batches are composed can not be decided a priori. Two different techniques for their composition have been identified.
+A first one that works on fixed number of activities for each batch and an alternative which divides posts into batches covering fixed time periods.
+
+The dimensionality-based one is the most basic. Simply, if 180 new activities are downloaded and it is decided to compose batches of 50 activities each, three full and one half batches will be returned.
+This methodology is in contrast with the result's flexibility criteria seen above because any type of control over the individual activities is lost.
+
+On the other hand, the temporality-based alternative divides batches in a more organized way.
+In fact, there is an additional degree of freedom that allows you to decide the length of the time periods. 
+This solution helps visualizing the result and giving the opportunity of observe how significant insights varies over time.
+However, this period must be common for every set. In Chapter~\ref{cha:evaluation} a prototype of the system is implemented with batches covering one month.
+
+After the various activities are divided, it is necessary to run the same aggregation algorithm on every batch.
+At first, static information about the user's profiles, such as creation date and number of friends are copied in each batch.
+Then, for each set of features, the significant features are aggregated in the best way to represent them globally
+So, for example, it is counted how many activities of each type there are. These can be differentiated into original posts, shares, comments and replies.
+Then, text features are summed together treating the batch as a single text document.
+
+Finally, a list of batches is returned. Each one includes all the data needed for the classifications implemented by the system.
+Each batch should also contain some descriptive information such as the ID of the oldest activity it contains, the number of activities, and the time period that it covers.
+
+\begin{multicols}{2}
+\begin{verbatim}
+//input
+[
+    {
+        "postID": 123456,
+        "socialID": 1234
+    }
+]
+        
+//output
+[
+    {
+        "UserID": 8564,
+        "batchID": 001
+    }
+]
+\end{verbatim}
+\end{multicols}
+
+
+\subsection{Classifiers}
+At this point the situation is that each batch represent a partial user who can be classified. 
+This component has the goal to assign a value for each aspect implemented by the system.
+
+This decision can be made both with machine learning and non-machine learning algorithms.
+In this thesis, as discussed later in Chapter~\ref{cha:evaluation}, machine learning models have been used for psychological aspects while better-defined characteristics, such as the users' activity periods over the day, are inferred by looking singularly at the features.
+
+As showed in Figure~\ref{fig:components} all the classifiers are treated as a single component. Actually, there are many different classifiers.
+Some may work on the same features but, in general, they are all independent from each other.
+So, their execution can be viewed in parallel where, as it is shown in Figure~\ref{fig:classifiers} all the subcomponents use the same input and each one contributes to the generation of the final output
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=%
+    1.0\textwidth,keepaspectratio]{img/classifiers}
+    \caption{Parallel view of some of the classifiers}
+    \label{fig:classifiers}
+\end{figure}
+
+In the case of classifiers that use text features, it must be remembered that all the analyses done on natural language depend strictly on the language on the same.
+Therefore, to handle multiple language, multiple classifiers are required.
+
+As output, the same list of input batches is returned where for each implemented aspect the corresponding class is returned.
+%The result of each batch, together with its descriptive information, can now be stored.
+
+\begin{multicols}{2}
+\begin{verbatim}
+//input
+[
+    {
+        "UserID": 8564,
+        "batchID": 001
+    }
+]
+            
+//output
+[
+    {
+        "UserID": 8564,
+        "batchID": 001
+    }
+]
+\end{verbatim}
+\end{multicols}
+
+\subsection{Insight generator}
+DESCRIPTION OF THE ALGORITHM USED TO MERGE TOGETHER BATCHES' RESULTS
+
+
+\section{Exposed APIs}
+Finally, the endpoint offered at the user by the system are presented. During the design of the interfaces, the principles of the RESTful architecture have been followed.
+The resources publicly exposed are two: \textbf{User} and \textbf{New Activities Download}.
+Regarding the user, it is possible to create new instances, modify, or delete existing ones.
+A user is basically a list of social profiles and a name to be identified. Each social profiles requires an user id and an access token.
+When an new user is added to the system, it results as non classified. The \textbf{New Activities Download} allows you download and classify her social profiles.
+At this point, retrieving the user instance it will be classified and the extracted insights about her will be returned.
+The complete API specification can be found on Apiary: TODO
