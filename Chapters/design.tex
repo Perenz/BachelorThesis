@@ -43,7 +43,8 @@ The state of the art rarely took into consideration different approaches. Usuall
 It means that, at each request, all the downloaded activities are merged into a single user that summarise what has been provided by the social media.
 At first, a solution of this type might work if the goal is to verify the feasibility of a specific classification in order to be able to measure its performance quickly and easily.
 On the other hand, when it comes to the production environment, this technique presents some evident lacks that need to be considered.
-For example, one main issue concerns TODO %The integration of the result once new activities are posted. We don't want to recompute entirely the profile
+For example, one main issue concerns the integration of the insight once new activities are posted by a user. %The integration of the result once new activities are posted. We don't want to recompute entirely the profile
+The system should only download and classify the new activities and then integrate the result with the one previously stored.
 
 Starting from this last problem I worked on three different alternatives. These three proposals are the feasible solutions that answered to a series of questions and critical points that emerged during this design process. 
 \begin{itemize}
@@ -75,7 +76,7 @@ Each batch's content is aggregated with the same algorithm introduced before. In
 Finally, the B batches are classified singularly and their results are then joined together.
 So, the complexity is \textbf{$\Theta(N*M) + \Theta(B*M) + \Theta(B)$}.
 
-To conclude, since the architecture aggregation-based considers in its formula the number of request to the system, it is not scalable in terms of increasing loads.
+To conclude, since the architecture aggregation-based considers in its formula the number of requests to the system, it is not scalable in terms of increasing loads.
 On the other hand, the other two alternatives are computationally similar. The differences between the two stay in the number of classifications done and the final aggregation of partial results.
 
 \subsection{Accuracy of the result}
@@ -88,7 +89,7 @@ This means that the activities are not associated with the exact moment they wer
 
 This last issue is partially solved by the activity-based methodology because in the features used to classify each activity can be included that information about the social user.
 However, this data is taken in the moment the social network's API are consulted so it is not perfectly accurate for each post but it can represent a good approximation.
-On the other hand, this alternative involves two major obstacles. Firstly, it has been proved that, especially in the case of psychological studies, text represent the first source of information. Typically, on the social media users tend to write short posts composed by just a pair of sentences. 
+On the other hand, this alternative involves two major obstacles. Firstly, it has been proved that, especially in the case of psychological studies, text represent the first source of information. Typically, on the social media, users tend to write short posts composed by just a pair of sentences. 
 Thus, what has been argued is that the quantity and the quality of the extracted features do not allow a precise classification of behavioural aspects.
 Secondly, once every single activity is classified, they must be merged together to generate the user's insight.
 In the case of categorical results it is not clear how singular results should be merged and how each one should be weighted with respect to the others.
@@ -132,7 +133,7 @@ Also, each batch can be normalized regarding the number of activities it contain
 Here is briefly discussed where, in the system, data persistence needs to be implemented
 Then, it is observed how the data model affects the system and, in particular, its evolution.
 
-To compute the user aggregates, persistence must be implemented on the component that perform the aggreagation so that they can be updated at every new download.
+To compute the user aggregates, persistence must be implemented on the component that perform the aggregation so that they can be updated at every new download.
 Then, the results of the classifications need to be stored. Also, the activities collector should know which is the last activity downloaded for each user in order to not count them multiple times.
 The features the system memorise are always known a priori depending on what classifications the system performs. Consequently, the removal or the addition of some features, for example to improve or add a new model, involve adapting the whole data model and the download of the whole user's timeline.
 
@@ -254,9 +255,9 @@ This part has to task to create a single object, characterised by a series of fe
 By simply iterating over all the activities received, it is primarily responsible for dividing them in batches and then calculating their aggregated values.
 
 The way batches are composed can not be decided a priori. Two different techniques for their composition have been identified.
-A first one that works on fixed number of activities for each batch and an alternative which divides posts into batches covering fixed time periods.
+A first one that works on a fixed number of activities for each batch and an alternative which divides posts into batches covering fixed time periods.
 
-The dimensionality-based one is the most basic. Simply, if 180 new activities are downloaded and it is decided to compose batches of 50 activities each, three full and one half batches will be returned.
+The dimensionality-based one is the most basic. Simply, if 180 new activities are downloaded and it is decided to compose batches of 50 activities each, three full and one-half batches will be returned.
 This methodology is in contrast with the result's flexibility criteria seen above because any type of control over the individual activities is lost.
 
 On the other hand, the temporality-based alternative divides batches in a more organized way.
@@ -265,7 +266,7 @@ This solution helps visualizing the result and giving the opportunity of observe
 However, this period must be common for every set. In Chapter~\ref{cha:evaluation} a prototype of the system is implemented with batches covering one month.
 
 After the various activities are divided, it is necessary to run the same aggregation algorithm on every batch.
-At first, static information about the user's profiles, such as creation date and number of friends are copied in each batch.
+At first, static information about the user's profiles, such as creation date and the number of friends are copied in each batch.
 Then, for each set of features, the significant features are aggregated in the best way to represent them globally
 So, for example, it is counted how many activities of each type there are. These can be differentiated into original posts, shares, comments and replies.
 Then, text features are summed together treating the batch as a single text document.
@@ -298,7 +299,7 @@ Each batch should also contain some descriptive information such as the ID of th
 At this point the situation is that each batch represent a partial user who can be classified. 
 This component has the goal to assign a value for each aspect implemented by the system.
 
-This decision can be made both with machine learning and non-machine learning algorithms.
+This decision can be made both with machine learning and non-machine learning algorithms. Section~\ref{sec:Classifiers} gives a more detailed description of the classifiers included in the system.
 In this thesis, as discussed later in Chapter~\ref{cha:evaluation}, machine learning models have been used for psychological aspects while better-defined characteristics, such as the users' activity periods over the day, are inferred by looking singularly at the features.
 
 As showed in Figure~\ref{fig:components} all the classifiers are treated as a single component. Actually, there are many different classifiers.
@@ -314,7 +315,7 @@ So, their execution can be viewed in parallel where, as it is shown in Figure~\r
 \end{figure}
 
 In the case of classifiers that use text features, it must be remembered that all the analyses done on natural language depend strictly on the language on the same.
-Therefore, to handle multiple language, multiple classifiers are required.
+Therefore, to handle multiple languages, multiple classifiers are required.
 
 As output, the same list of input batches is returned where for each implemented aspect the corresponding class is returned.
 %The result of each batch, together with its descriptive information, can now be stored.
@@ -340,14 +341,37 @@ As output, the same list of input batches is returned where for each implemented
 \end{multicols}
 
 \subsection{Insight generator}
+\label{sec:Generator}
 DESCRIPTION OF THE ALGORITHM USED TO MERGE TOGETHER BATCHES' RESULTS
+
+\section{Classifiers}
+\label{sec:Classifiers}
+
+In this section, each classifier supported by the system is described. There are both binary models, where the output is either 0 or 1, and multi-class classifiers that classify instances into one of N classes, with $N>2$.So, here the output ranges from 0 to $N-1$ and each integer represents a class.
+In this way, all the models share a common structure for the representation of their results. The mapping from the integer to the descriptive category is carried out later when the user's result is requested.
+
+A big issue in dealing with user profiling from social media is the lack of data. Indeed, even though many different aspects of a person have been studied, only a limited number of papers published the datasets they used or built for that research.
+Since not enough data to train and evaluate a machine learning model is available, artificial intelligence solutions are not always viable.
+For this reason, as introduced before, many of the algorithms presented here do not follow a machine learning approach but a more standard one.
+
+\subsection{MBTI Personality traits}
+
+\subsection{Daily Usage}
+
+\subsection{Influence Role}
+
+\subsection{Language}
 
 
 \section{Exposed APIs}
 Finally, the endpoint offered at the user by the system are presented. During the design of the interfaces, the principles of the RESTful architecture have been followed.
 The resources publicly exposed are two: \textbf{User} and \textbf{New Activities Download}.
 Regarding the user, it is possible to create new instances, modify, or delete existing ones.
-A user is basically a list of social profiles and a name to be identified. Each social profiles requires an user id and an access token.
-When an new user is added to the system, it results as non classified. The \textbf{New Activities Download} allows you download and classify her social profiles.
+A user is basically a list of social profiles and a name to be identified. Each social profile requires a user id and an access token.
+When a new user is added to the system, it results as non-classified. The \textbf{New Activities Download} allows you download and classify her social profiles.
 At this point, retrieving the user instance it will be classified and the extracted insights about her will be returned.
-The complete API specification can be found on Apiary: TODO
+The complete API specification can be found on Apiary:
+
+\begin{center}
+\url{/uhopperthesis.docs.apiary.io}
+\end{center}

@@ -1,3 +1,36 @@
 \chapter{Implementation}
+This chapter describes the implementation of a prototype of the system.
+It shows how each component was implemented to deal with the requests' limits of external services.
+Then, the interaction between them is explained showing the data flow starting with the user request to the final response.
+Finally, the techniques used for each classifier are introduced.
+
 \section{Components interactions}
-\section{Algorithms implementation}
+Generally, the system is composed by a main request which mobilizes the download of a user's profiles, their analysis and finally their classification.
+This process ends with a series of classified batches, of monthly time duration, that are stored in the database.
+Then, the call to obtain the final results starts the insight generator shown in Section~\ref{sec:Generator} which merges together the partial results and return the final insight at the user level.
+
+These different types of requests are handled by the request handler which is represented by the user's endpoint, the only interface to the outside of the system.
+As said before, it also allows to add and modify the system's users.
+The download request is the one that requires communication between multiple components.
+
+This prototype allows the interaction and the download of social profiles only from Twitter.
+Indeed, while data from Twitter are publicly accessible through its APIs, other social media, such as Facebook and Instagram, require an access token for each consulted user.
+To obtain the access token, a demo video that shows what the system does must be provided, the data treatment has to be described precisely, and each person should accept to share its data.
+\subsection{Download Request}
+The endpoint /newactivities represents the most complex one that involved the majority of the components.
+In this prototype, the components execute synchronously. In the moment the request is received, the activities collector is executed and the system waits for it to end and return its results.
+Then, all the downloaded activities are analysed. Once all the features are extracted, they are divided in batches and finally classified and stored.
+
+The process starts with the ID of a user which is used to search on the database the Twitter ID associated with that specific user. 
+This is used by the activities collector to download the new content. As said before, the system is structured to download only new activities and not the whole timeline.
+To do it, it is used the ID of the oldest activity of the second-to-last stored batch because the last one could contain only a part of the content posted in a month. 
+The drawback of this choice is that activities already contained in the last batches are downloaded and classified again but it is necessary to ensure a full download. Moreover, a maximum of thirty days is downloaded twice which is a limited number compared to the whole user's timeline.
+The collector uses \textit{Tweepy}, a Python library, to access the Twitter API. It allows to download a user's content specifying its ID and the point from where the download of its activities should start.
+Once the download is complete, an object \textbf{User} is created. It contains both social information about the profile, such as creation date and description, and the list of all the fetched activities. Each one is represented by a \textbf{Post} object that contains everything about the downloaded content: creation date, number of likes and retweets, its text, list of media, hashtags and urls.
+The user object is passed to the next component, the analyser, with a standard class method call by the request handler.
+
+The analyser is the component that extract, starting from the single activities, the significant features.
+Considering the various classifiers implemented, different types of features are extracted.
+First of all, the information contained into the fetched tweet object that does not require any processing or further analysis is kept also in the analysed Post. This includes its id, the creation date, the number of favourites and retweets, the language of the tweet and its type.
+There are 4 different types of tweets: original, reply, retweet, and quote.
+Then, the text component of the post is used to obtain fundamental textual features. This analysis is carried out using \textit{SpaCy}, an open-source Python library for natural language processing. 
