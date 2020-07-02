@@ -29,8 +29,17 @@ The collector uses \textit{Tweepy}, a Python library, to access the Twitter API.
 Once the download is complete, an object \textbf{User} is created. It contains both social information about the profile, such as creation date and description, and the list of all the fetched activities. Each one is represented by a \textbf{Post} object that contains everything about the downloaded content: creation date, number of likes and retweets, its text, list of media, hashtags and urls.
 The user object is passed to the next component, the analyser, with a standard class method call by the request handler.
 
-The analyser is the component that extract, starting from the single activities, the significant features.
+The analyser is the component that extracts, starting from the single activities, the significant features.
 Considering the various classifiers implemented, different types of features are extracted.
-First of all, the information contained into the fetched tweet object that does not require any processing or further analysis is kept also in the analysed Post. This includes its id, the creation date, the number of favourites and retweets, the language of the tweet and its type.
+
+First of all, the information contained into the fetched tweet object that does not require any processing or further analysis is kept also in the analysed Post. This includes its id, the creation date, the number of favourites and retweets, the language of the tweet, and its type.
 There are 4 different types of tweets: original, reply, retweet, and quote.
-Then, the text component of the post is used to obtain fundamental textual features. This analysis is carried out using \textit{SpaCy}, an open-source Python library for natural language processing. 
+
+Then, the text component of the post is used to obtain fundamental textual features. This analysis is carried out using \textit{SpaCy}, an open-source Python library for natural language processing.
+Before executing the Spacy pipeline, some pre-processing is done. Whitespaces are normalized, multiple spaces and new lines are treated as a single space. The number of capital letters is memorized and then the text is converted completely in small caps.
+Then, the text is passed through all the components of the pipeline. It starts with the \textit{tokenizer} which segments text into tokens like words and punctuations marks. The \textit{lemmatizer} is now involved to reduce each word to its canonical form, called \textbf{lemma}. Then, each token is assigned a part-of-speech tag thanks to the \textit{tagger}.
+At this point, 2 custom components are added. First, the extension \textit{spacymoji} is used to handle emojis efficiently. Then, the last component handles #hashtags and @mentions so that the lemma does not contain special symbols # and @.
+The result of this pipeline is a list of tokens that represent the bag of words extracted from the text. Each token contains information such as the raw word, its lemma, and its POS tag.
+Now, other more generic features are extracted. spacy allows counting automatically the number of sentences, words, and characters. Starting from this data, many averages are computed such as number of words per sentence and characters per word.
+To conclude, the tokens extracted before are divided into three different sets: words, stop words and punctuation.
+
