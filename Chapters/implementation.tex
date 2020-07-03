@@ -35,11 +35,37 @@ Considering the various classifiers implemented, different types of features are
 First of all, the information contained into the fetched tweet object that does not require any processing or further analysis is kept also in the analysed Post. This includes its id, the creation date, the number of favourites and retweets, the language of the tweet, and its type.
 There are 4 different types of tweets: original, reply, retweet, and quote.
 
-Then, the text component of the post is used to obtain fundamental textual features. This analysis is carried out using \textit{SpaCy}, an open-source Python library for natural language processing.
+The text component of the post is used to obtain fundamental textual features. This analysis is carried out using \textit{SpaCy}, an open-source Python library for natural language processing.
 Before executing the Spacy pipeline, some pre-processing is done. Whitespaces are normalized, multiple spaces and new lines are treated as a single space. The number of capital letters is memorized and then the text is converted completely in small caps.
 Then, the text is passed through all the components of the pipeline. It starts with the \textit{tokenizer} which segments text into tokens like words and punctuations marks. The \textit{lemmatizer} is now involved to reduce each word to its canonical form, called \textbf{lemma}. Then, each token is assigned a part-of-speech tag thanks to the \textit{tagger}.
-At this point, 2 custom components are added. First, the extension \textit{spacymoji} is used to handle emojis efficiently. Then, the last component handles #hashtags and @mentions so that the lemma does not contain special symbols # and @.
+At this point, 2 custom components are added. First, the extension \textit{spacymoji} is used to handle emojis efficiently. Then, the last component handles \#hashtags and @mentions so that the lemma does not contain special symbols \# and @.
 The result of this pipeline is a list of tokens that represent the bag of words extracted from the text. Each token contains information such as the raw word, its lemma, and its POS tag.
 Now, other more generic features are extracted. spacy allows counting automatically the number of sentences, words, and characters. Starting from this data, many averages are computed such as number of words per sentence and characters per word.
-To conclude, the tokens extracted before are divided into three different sets: words, stop words and punctuation.
+To conclude, the tokens extracted before are divided into three different sets: words, stop words, emojis, and punctuation.
+This distinction is important because we that our classification models could treat each set differently.
+Stop words refer to the most common words in a language. There is no single general list of stop words and any group of words can be chosen. Spacy provides its own list for each supported language.
+The punctuation set includes all the standard punctuation marks but \# and @ that are often special symbols on the social networks.
+Finally, the words set contains all the other words.
+Each set is memorized as a dictionary {\textbf{key} : \textbf{value}} used as a counter where \textbf{key} is the text of the token and \textbf{value} is its number of occurrences in the tweet.  
+Some of the pipeline operations described, such as the lemmatizer, the tagger, and the stop words list, are language-dependent. In this prototype, the Italian module of Spacy has been used so these three specific phases are optimized only for that language. Anyway, Spacy provides plenty languages models and also a multi-language one.
 
+Another important group of features is that describing the content of a tweet. For this purpose, \textit{DandelionAPI}, a semantic analysis service was used. It works on unstructured text to extract its meaning. 
+In particular, it offers two important functionalities: entity extraction and sentiment analysis.
+The first one can be useful to understand a person's interest and therefore is not used in this prototype which does not implement that specific classifier.
+The second one may have an important role with respect to psychological characteristics.
+It allows identifying whether an opinion contained in the tweet is negative, neutral, or positive. 
+DandelionAPI is accessed with restAPIs and one request is necessary for each piece of text that need to be analysed. Moreover, it supports more than 40 languages, including Italian and English, and it can also compute automatically the language detection of the text given as parameter.
+The response is structured in JSON and contains: the detected language, a sentiment score and a sentiment type.
+The score is a more precise indicator ranging from -1.0 (totally negative) to 1.0 (absolutely positive) while the type is a descriptive label which can be \textit{negative}, \textit{neutral}, or \textit{positive}. 
+
+Finally, the set of features regarding the media entities is created. Twitter supports three types of media: photos, videos and animated gifs. They are generally treated as \textit{media entity}.
+The TwitterAPI returns, for each entity, a exhaustive series of descriptive attributes. Of interest for this prototype are the media type and the media URL.
+The first one is important to understand in which way a person ten to communicate while the second one represents an important part of the tweet's content.
+They may be analysed in order to detect emotion, entities and, places in a way similar at that done for the text.
+So, even though images and videos are not used in this demo, mainly because rarity of free computer vision services, the URLs are downloaded to easily allow future improvements.
+
+Once all the features are extracted, the same \textbf{User} object taken as input is modified replacing the list of \textbf{Post} object with a list of features which represents the analysed tweets.
+This new object is passed to the next component, the aggregator.
+
+The aggregator has to goal to divide the posts in batches and then compute the aggregates for each batch.
+As introduced before, in this prototype the batches are temporality-based and each one ranges over a period of one month.
