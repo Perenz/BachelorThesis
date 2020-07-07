@@ -1,5 +1,5 @@
 \chapter{Design and methodology}
-This chapter presents the architecture of the system. Starting with a basic schematic view, it is showed what fundamental components compose it, their role, how they work and how they communicate each other.
+This chapter presents the architecture of the system. Starting with a basic schematic view, it shows what fundamental components compose it, their role, how they work and how they communicate each other.
 %Then description of specific choiches
 Then, the architecture is detailed more. Each step, starting with the download of raw activities and ending with the final user's attitudes, is described specifying what choices have been done and why.
 
@@ -59,21 +59,21 @@ The six bases are: computation complexity, result's accuracy, GDPR compliance, r
 \subsection{Computation Complexity}
 The performance of each propose strictly depends on the trade-off between a single classification and the aggregation of features from many activities.
 Assume that the cost of a single classification is equal to the number of features M, $\Theta(M)$.
-Estimate now, for each solution, the computational complexity of the download of N activities and the user's classification.
+Estimate now, for each solution, the computational complexity of the download of $N$ activities and the user's classification.
 Firstly, It must be noticed that the first two steps of the process, the activities download and their analysis, are not affected by the architectural choice. Therefore, to keep everything clearer, their contribution will be omitted from the following estimations.
 
-Assuming that the aggregation algorithm just iterate on each post of the timeline a single time observing each one of the M extracted features. So, its computational cost is $\Theta(N*M)$.
-As already said, Using user's aggregates implies to compute the classification on its totality at every request to the system. So, this method's complexity considers the number R of requests which is obviously constantly growing. 
+Assuming that the aggregation algorithm just iterate on each post of the timeline a single time observing each one of the $M$ extracted features. So, its computational cost is $\Theta(N*M)$.
+As already said, using user's aggregates implies to compute the classification on its totality at every request to the system. So, this method's complexity considers the number $R$ of requests which is obviously constantly growing. 
 It can be formalized as \textbf{$\Theta(N*M) + \Theta(M*R)$}.
 
 Regarding the second alternative, while it is no longer necessary to aggregate the analysis of each activity, it is required to merge together each singular result in order to obtain the final insight.
-Moreover, the classification is performed N times on the exact number M of features.
+Moreover, the classification is performed $N$ times on the exact number $M$ of features.
 So, the complexity of the solution activity-based is \textbf{$\Theta(N*M) + \Theta(N)$}.
 
 To analyse the last solution, the batch-based one, it is not necessary to define how batches are composed in detail.
-The N downloaded activities are somehow partitioned into B batches with $B \leq N$.
-Each batch's content is aggregated with the same algorithm introduced before. In general, it is not important how many batches there are, the aggregator will still work on M features of the N activities.
-Finally, the B batches are classified singularly and their results are then joined together.
+The $N$ downloaded activities are somehow partitioned into $B$ batches with $B \leq N$.
+Each batch's content is aggregated with the same algorithm introduced before. In general, it is not important how many batches there are, the aggregator will still work on $M$ features of the $N$ activities.
+Finally, the $B$ batches are classified singularly and their results are then joined together.
 So, the complexity is \textbf{$\Theta(N*M) + \Theta(B*M) + \Theta(B)$}.
 
 To conclude, since the architecture aggregation-based considers in its formula the number of requests to the system, it is not scalable in terms of increasing loads.
@@ -112,7 +112,7 @@ Using one of the other two alternatives, the situation changes markedly because 
 The solution activities-based, compared to the last one, brings more profit with respect to the accuracy issue. Indeed, it gives the opportunity to complement every single activity with the social status in the moment it was posted while batches still implies a minimum approximation.
 
 \subsection{Flexibility of the result}
-This small chapter gives a focus on the benefits regarding the result's flexibility rather than criteria that need to be met.
+This small section gives a focus on the benefits regarding the result's flexibility rather than criteria that need to be met.
 Depending on this architectural choice the system could allow the composition of the final results with different options. For example, by taking into consideration only a subset of the whole user's timeline
 
 Using the user aggregates, it is quite difficult to act on the final result once it has been classified.
@@ -130,8 +130,8 @@ Also, each batch can be normalized regarding the number of activities it contain
 
 
 \subsection{Storing}
-Here is briefly discussed where, in the system, data persistence needs to be implemented
-Then, it is observed how the data model affects the system and, in particular, its evolution.
+Here is briefly discussed where, in the system, data persistence needs to be implemented;
+then, it is observed how the data model affects the system and, in particular, its evolution.
 
 To compute the user aggregates, persistence must be implemented on the component that perform the aggregation so that they can be updated at every new download.
 Then, the results of the classifications need to be stored. Also, the activities collector should know which is the last activity downloaded for each user in order to not count them multiple times.
@@ -162,7 +162,7 @@ However, as said before, that aspect was analysed through general observations a
 \end{figure}
 
 In this section, the architecture is decomposed into its components. Each component works on the input of the previous one to carry out a step of the whole process described previously.
-Totally, 5 components have been identified: activities collector, features extractor, user aggregator, classifiers and the insight generator. They are shown in Figure~\ref{fig:components}:
+Totally, five components have been identified: activities collector, features extractor, user aggregator, classifiers and the insight generator. They are shown in Figure~\ref{fig:components}:
 
 
 Next, the logic of each component is provided, illustrating what each one does, its input, and output.
@@ -320,6 +320,7 @@ Therefore, to handle multiple languages, multiple classifiers are required.
 As output, the same list of input batches is returned where for each implemented aspect the corresponding class is returned.
 %The result of each batch, together with its descriptive information, can now be stored.
 
+
 \begin{multicols}{2}
 \begin{verbatim}
 //input
@@ -342,12 +343,44 @@ As output, the same list of input batches is returned where for each implemented
 
 \subsection{Insight generator}
 \label{sec:Generator}
-DESCRIPTION OF THE ALGORITHM USED TO MERGE TOGETHER BATCHES' RESULTS
+This component has to final task to merge together all the partial results of each batch to generate the general user's insights.
+To do it, an algorithm was defined. The input of this algorithm is a list of \textbf{classified batches}.
+Each batch is an object that contains the descriptive information necessary to map it into the whole user's timeline and results of all the classifications performed by the system.
+As explained in more details later in Section~\ref{fig:classifiers}, all the results are integers that represent the corresponding class.
+The algorithm is here defined in pseudocode. This results aggregation consider two characteristics of each batch: the number of activities it contained and the time period it covers.
+These are used to weigh the contribution each batch gives to the final result. Indeed, for each batch, two parameters are calculated.
+$\gamma$ that is the weight coming from the number of activities and $\delta$, that coming from the batch period.
+The algorithm iterates only one on each batch. An iteration is composed by two main parts. In the first one, the two parameters are computed. In the second one, each result is taken in consideration for the final result.
+The method used to choose the final label is the same for all the classification. For each class of each classification a score is computed. So, each result contributes to its class of $s = \gamma / \delta$
+For each classification, the class with the highest final score is assigned. Algorithm 1 explain the method.
+
+\begin{algorithm}
+\caption{Merge together partial results of each batch}
+\label{algoGenerator}
+\begin{algorithmic}[1]
+\Function{mergeBatches}{batches}
+\State $scores \gets 0$
+\State $MAXs \gets 0$
+\ForAll{$b \in \text{batches}$}
+    \State $\gamma \gets \Call{activitiesContribute}{\text{b.actitivitiesNum}}$
+    \State $\delta \gets \Call{periodContribute}{\text{b.period}}$
+    \ForAll{$i \in \text{b.results.length}$}
+        \State $scores[i][b.results[i]] \gets scores[i][b.results[i]] + \gamma/\delta$
+        \State $MAXs[i] \gets \Call{max}{MAXs[i], scores[i][b.results[i]]}$
+    \EndFor
+\EndFor
+\Return $MAXs$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Section~\ref{sec:getUserReq} explains how the two contributes are calculated in the implemented prototype.
 
 \section{Classifiers}
+
 \label{sec:Classifiers}
 
-In this section, each classifier supported by the system is described. There are both binary models, where the output is either 0 or 1, and multi-class classifiers that classify instances into one of N classes, with $N>2$.So, here the output ranges from 0 to $N-1$ and each integer represents a class.
+In this section, each classifier supported by the system is described. There are both binary models, where the output is either 0 or 1, and multi-class classifiers that classify instances into one of $N$ classes, with $N>2$. So, here the output ranges from 0 to $N-1$ and each integer represents a class.
 In this way, all the models share a common structure for the representation of their results. The mapping from the integer to the descriptive category is carried out later when the user's result is requested.
 
 A big issue in dealing with user profiling from social media is the lack of data. Indeed, even though many different aspects of a person have been studied, only a limited number of papers published the datasets they used or built for that research.
@@ -355,14 +388,69 @@ Since not enough data to train and evaluate a machine learning model is availabl
 For this reason, as introduced before, many of the algorithms presented here do not follow a machine learning approach but a more standard one.
 
 \subsection{MBTI Personality traits}
+As largely introduced in Chapter~\ref{cha:introduction} the \textit{Meyers-Briggs Type Indicator} model was chosen to extract the psychological characteristics of people.
+Thanks to the availability of a labelled dataset, later presented in Section~\ref{sec:MBTIData}, the extraction of each trait was mapped to a binary classification problem.
+This model is organized in four different personality traits which consist in four binary functions: Extrovert/Introvert, Sensor/Intuitive, Thinker/Feeler and Judger/Perceiver. The meaning of each class is explained in Section~\ref{sec:MBTI}
+
+Among the extracted features, these four classifiers use especially the textual ones.
+A clear drawback is that, since the majority of these features are language-dependent, the models are trained on a specific language and their application on profiles that do not use that specific one would obviously bring to unreliable results.
+To solve this issue, a model for each supported language should be implemented and then results for each one should be merged together. Thanks to the algorithm showed in Section~\ref{sec:Generator} this last aggregation is not a problem.
+So, the language-dependence of these classifiers is mainly due to the lack of usable data.
+
+An important choice made for the classification of the MBTI personality model is that each one of the four cognitive functions is classified independently.
+Different approaches tried a multi-class classification on the six-teen personality types given by the combination of the 4 dichotomies.
+However, following the methodologies shown in the current state of the art, the 4 models consist in the same ML algorithm and are trained on the same set of features.
+
+The output of each classifier is an integer representing the assigned value. For example, for the dychotomy \textit{Extrovert/Introvert}, the value $0$ means that the person is extrovert while $1$ indicates introversion.
 
 \subsection{Daily Usage}
+This classifier says in which period of the day a person is more active on social networks.
+To infer social presence the posted activities are observed. These do not include only original posts wrote by the user but also every kind of retweets and replies.
+
+To do so, the twenty-four daily hours are divided into time slots which can have a fixed and common duration or a variable one.
+Since the result of each classifier is a readable and actionable insight, each slot must be assigned a label indicating the specific activity period.
+
+Once the temporal bands are defined, the algorithm  that attributes one to each batch is quite simple.
+For each temporal slot is computed the percentage of tweets posted in that time frame.
+The one with the highest quantity of activities is kept and if its tweet's percentage is higher than a threshold $\alpha$, the value corresponding to that slot is assigned.
+Else, if the threshold is not exceeded, a special value that classifies the person as a whole-day user is assigned.
 
 \subsection{Influence Role}
+This model classifies the users for the role they assume on the social in terms of influence, communication, and social engagement.
+As explained in Chapter~\ref{cha:SoA}, much has been done to infer how much a person is listened and influence with her activities on the social networks.
+Many different studies developed their own metrics which uses many measurements provided directly by the social to evaluate a general influence value.
+However, this approach does classify the user with a usable label but rather with a real value that needs to be interpreted.
 
-\subsection{Language}
+So, this classifier aims to define well-defined classes of users with respect to their influence role inside their social network.
+Once the categories are chosen, the observation of the aforementioned measurements is necessary to classify the user into the right one.
 
+The approach followed here was to identify a number $N$ of categories and sort them from the one that represents less influence users to the one dedicated to influencers.
+Then, it is necessary to define which metrics the algorithm will take into account and a condition that each one may satisfy or not. 
+For example, it could observe the number of followers and check if it greater or lower than ten thousand.
+Depending on the check over this condition, the total score of the user that is being classified is updated.
+When all checks have been done, the users is assigned the label depending on its final score. Indeed, each class covers a subset of the values the score can assume.
+So, observing the score, the class is finally inferred.
 
+\subsection{Language and Communication Style}
+These two classifiers cover different aspects but their logic is extremely similar.
+The language one classifies the user with respect to the language he or she most used on their posts.
+The second one observes how a person tends to compose his tweets in terms of which means are used to communicate messages and emotions. For example, it can identifies users that communicate with images rather than raw text.
+
+For the former, it is not necessary to define a list of classes because it directly uses the \textit{IETF language tags} to decide which language is the most used one. A language tag that identifies human languages.
+Anyhow, this algorithm includes an extra category in case it is not possible to identify a dominant language in the user's communication. In this case, the user is classified as \textit{polyglot}.
+To verify if a person prefers a specific language, their usage percentage is checked. The higher one is chosen as the \textit{candidate}; if this exceeds a minimum threshold $\beta$, then its label is assigned. Else, the polyglot one is.
+
+The latter works similarly but it requires the definition of the classes. Once the classes are defined and it is decided which parameters observe, for example, if a person uses photos or videos, the label can be easily assigned observing the usage percentage of these parameters.
+
+\subsection{Sentiment}
+This last model regards the interpretation and classification of emotions.
+It allows to identify users sentiment in their daily communication on the social networks.
+Conducting this type of analysis on social media allows using both the text component and the visual one to infer someone's polarity.
+There is a number of different services that take as input a piece of text or an image and return a corresponding sentiment value.
+Section~\ref{sec:downloadRequ} explains how this system implemented it, which activity's components have been used and the reasons of these choices.
+
+In general, three label are used to describe people's polarity: \textit{negative}, \textit{neutral}, and \textit{positive}.
+To decide which label assign to each user, it is enough to define the range covered by each class and observe the average sentiment value. 
 \section{Exposed APIs}
 Finally, the endpoint offered at the user by the system are presented. During the design of the interfaces, the principles of the RESTful architecture have been followed.
 The resources publicly exposed are two: \textbf{User} and \textbf{New Activities Download}.

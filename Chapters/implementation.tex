@@ -17,6 +17,7 @@ This prototype allows the interaction and the download of social profiles only f
 Indeed, while data from Twitter are publicly accessible through its APIs, other social media, such as Facebook and Instagram, require an access token for each consulted user.
 To obtain the access token, a demo video that shows what the system does must be provided, the data treatment has to be described precisely, and each person should accept to share its data.
 \subsection{Download Request}
+\label{sec:downloadRequ}
 The endpoint /newactivities represents the most complex one that involved the majority of the components.
 In this prototype, the components execute synchronously. In the moment the request is received, the activities collector is executed and the system waits for it to end and return its results.
 Then, all the downloaded activities are analysed. Once all the features are extracted, they are divided in batches and finally classified and stored.
@@ -69,3 +70,61 @@ This new object is passed to the next component, the aggregator.
 
 The aggregator has to goal to divide the posts in batches and then compute the aggregates for each batch.
 As introduced before, in this prototype the batches are temporality-based and each one ranges over a period of one month.
+Thanks to the creation date of the posts, it is easy to divide them. Then, the information related to the social profile is copied into each batch.
+At first each batch represent a partial user composed by its descriptive data and its analysed timeline.
+The aggregator algorithm is executed on each batch to obtain a final classifiable object.
+The system includes many various features structured in many different formats. So, there is no standard way in which these are aggregated together.
+For different typologies, different approaches were applied.
+For example, information about the number of favourites and retweets is given from the simple average all tweets. Textual features about the different sets of tokens are merged by summing together the single count dictionary of each activity. Then, the counters are converted to frequency with respect to the totality of words. 
+Two lists are used to count the percentage of each typology of tweets and the time it was posted. Concerning the first one, four elements are enough. Differently, for the second one, it depends on which information is considered necessary.
+Here is used a list of length twenty-four to keep count at which specific hour of the day the activities are posted.
+In the end, the list of batches is returned and given as input to the classifiers.
+
+The classifiers are the last step of this request. Since they share a common architecture, they take as input the same object and return the output result with a common structure.
+The input of each classifier is a batch, or a list of batches. The output is usually an integer that represents the class assigned by that model.
+In this prototype, the classification algorithms are executed sequentially one after the other. Each result is stored in an dictionary {\textbf{key} : \textbf{value}} where \textbf{key} is a label that identifies the classifier. For example, it can be \textit{EI} to indicate the result that regards the classification of the Extrovert/Introvert aspect or \textit{Sentiment} which is the name of the classifier that performed the person's general sentiment.
+The \textbf{value} is an integer indicating the specific assigned class.
+An object of this type is returned for each batch and it's integrated with other descriptive information: the month covered by the batch in the format \textit{MM-YYYY}, the number of tweets contained, and the ID of the last posted one.
+As introduced in Section~\ref{sec:Classifiers}, lack of data is a serious problem that limits the use of machine learning techniques. So, only for a limited number of classifiers these techniques have been used.
+For the others, the implementation followed the algorithms explained in Section~\ref{sec:Classifiers}. 
+
+\subsection{GetUser request}
+\label{sec:getUserReq}
+This section describes how the second important request was implemented.
+When this request is called on a classified user, its partial results of every batch are merged together applying an implementation of the algorithm~\ref{algoGenerator} and then returned.
+As parameters, it requires only the ID of the system user. It returns in output, structured as JSON, the user characterised by its information and its final insights.
+
+This involves only one component, the insight generator. It has to query the database to obtain all the partial results of the searched user and then run the algorithm described in Section~\ref{sec:Generator}.
+In this prototype, each batch covers a period of exactly one month. 
+The values $\gamma$ and $\delta$ are computed as follows:
+\begin{gather}
+\label{gamma}
+\gamma = \ceil{((actualYear*12 + actualMonth) - (batchYear*12 + batchMonth)/2)} \\
+\delta = batchActivities
+\end{gather}
+So, $\delta$ consists in only the number of activities contained in a specific batch. 
+$\gamma$ is an integer that takes into consideration the number of months between the actual one and the one covered by the batch. This value starts at one and increase of one every two months.
+
+Then the algorithm is applied with these two values, that are calculated at every iteration.
+Finally, the final object representing the user can be returned.
+
+
+\section{User dashboard}
+\label{sec:userDash}
+Finally, a dashboard to see the results and evaluate the system's efficiency was realized.
+It is a web client that allows searching for a user and observe how his or her insights changed over time.
+
+The application is realized with \textit{HTML}, \textit{JS} and uses \textit{AJAX} to communicate with the system.
+The dashboard send a getUser request~\ref{sec:getUserReq} and display the results in a readable way.
+For each classification, a stepped line graph is used. On the x-axis, there are the months covering the whole user's timeline.
+On the y-axis, there are the classes depending on which classification is being observed.
+
+Figure~\ref{fig:userDash} shows a view of the dashboard for a random user. The displayed classification is that of the used language. It is observable that the user tend to communicate only in Italian and English.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=%
+    0.95\textwidth,height=20cm,keepaspectratio]{img/userDash}
+    \caption{A view of the user dashboard}
+    \label{fig:userDash}
+\end{figure}
