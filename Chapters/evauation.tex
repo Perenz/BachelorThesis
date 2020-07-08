@@ -30,7 +30,7 @@ From this table, 4 measures as usually extracted:
 
 \section{MBTI Classifiers evaluation}
 Regarding these 4 classifiers, no particular setups have been applied.
-Decision trees have been chosen as classifiers, according to the current stato of the art.
+Decision trees have been chosen as classifiers, according to the current state of the art.
 Naive bayes classifiers are also usually applied for such purposes but were discarded due to bad performance with the linguistic features.
 
 The performance evaluations were performed on the same dataset used to train the four classifiers.
@@ -71,11 +71,53 @@ To do it, nearly twenty twitter profiles were downloaded and classified for a to
 Their results have been displayed over time thanks to the batch-based architecture and then observed individually.
 
 Some interesting observations can be done comparing the results for two, or more, different profiles.
-For example, two of the downloaded profiles, which comes from a similar environment, are the one of the \textbf{University of Trento} (\url{https://twitter.com/UniTrento}) and that of the \textbf{Department of Information Engineering and Computer Science} (\url{https://twitter.com/UniTrento_DISI})
+For example, two of the downloaded profiles, which comes from a similar environment, are the one of the \textbf{University of Trento} (\url{https://twitter.com/UniTrento}) and that of the \textbf{Department of Information Engineering and Computer Science} (\url{https://twitter.com/UniTrento_DISI}) show some interesting differences that deserve to be observed to understand better
+at which point the system can actually be useful and usable. For each profile, the last two thousand activities have been fetched.
+In Figure~\ref{fig:dailyComp}, the daily usage insights of these two profiles are compared.
+
+First of all, it can be noticed that the two profiles tweet with different frequencies. Indeed, the last two thousand activities for the profile of the University of Trento covers thirty-five months, which brings to an average of fifty-seven tweets per month, almost two per day. Differently, the same number of tweets ranges over fifty-five months for the Department of Information Engineering that corresponds to thirty-six activities per month and just over one tweet a month.
+The latter also shows some months of no activity at all. During these periods the graph has no value and loses its contuinity.
+
+Then, looking at the values each graph has, we can observe how the two profiles differ much in terms of variability. 
+The UniTN one is active especially during the afternoon, from 12:00 to 18:00, with some rare periods of morning activity.
+On the other hand, the profile of the department fluctuates much more. It spreads its tweets particularly between morning and afternoon, so between 6:00 and 18:00. However, it also shows some activities at evening and night.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=%
+    1.0\textwidth,height=14cm,keepaspectratio]{img/dailycomparison.pdf}
+    \caption{Comparison between the \textbf{daily usage} insight of \textbf{UniTN}(1) and \textbf{DISI}(2)}
+    \label{fig:dailyComp}
+\end{figure}
+
+One could use these type of comparisons to draw its conclusion in order to identify what's the difference between two or more profiles.
+For example, in this case, we can assume that the University of Trento pays more attention to social reach, a metric that measures how many users came across its tweets. Indeed, it has been proved that the best time to post on Twitter is during the afternoon \footnote{\url{https://neilpatel.com/blog/is-there-a-generic-best-time-to-post-on-social-media-platforms/}}.
+Contrarily, the profile of the department, which we can assume being more international rather than  national, does not have a particular time where the reach is higher; probably because of the different time zones of the followers.
+
+The extracted attributes can then be observed in groups to find other correlations. Continuing with the example and the assumption about the internationality of the two profiles.
+Observing and comparing the insights about the language in Figure~\ref{fig:langComp}, it can be said that the institute tends to talk only to their Italian students since their communications are done only in Italian while the department has to meet the language requirements of different nationalities and so English is highly preferred.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=%
+    1.0\textwidth,height=14cm,keepaspectratio]{img/langComparison.pdf}
+    \caption{Comparison between the \textbf{language} insight of \textbf{UniTN}(1) and \textbf{DISI}(2)}
+    \label{fig:langComp}
+\end{figure}
 
 \section{Insights' actionability}
+\label{sec:InsAct}
 An important goal that this thesis aimed to meet was to extract actionable insights. Insights capable of helping a company during their interaction with its customers.
 This short section gives some examples of how the implemented classifiers can actually help a business.
 
-Starting with one of the four personality traits
-\label{sec:InsAct}
+Starting with one of the four personality traits, in particular with the Extrovert/Introvert dichotomy, such information can be used, for example, in any marketing campaign to propose the customer a suited offer. For instance, introvert people may prefer something that does not involve any particular human relations while extrovert ones could be more attracted by group activities.
+
+Some more obvious aspects are those regarding the language and daily usage of a person. The first one can be trivially useful to a company to relate with their customers with a specific language.
+Then, the second characteristic can help the customer-company relation. Assuming that people tend to use social in their leisure, contacting them during these periods can encourage communications.
+
+Differently from the previous ones, the insights about the communication style can also help adapting a particular service or product. For example, graphical interfaces may modify their views to completely satisfy the esigenze of each user. Indeed, someone could prefer images and videos while others like detailed pieces of text.
+
+Moreover, the display of the results compared to time provided by the dashboard adds another degree of reading.
+Indeed, taking as example the daily usage, it is easy to observe if there are patterns that repeat monthly.
+
+
