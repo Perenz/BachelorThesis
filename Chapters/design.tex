@@ -12,13 +12,13 @@ The main functional requirement is that the system has to be able to extract a s
 All the social network the user has registered must be analysed for both the social profile and the activities.
 The architecture should allow the addition of new users into the system and the removal of existing ones. Then, once a system user is created, it must be possible to register and remove new social media account.
 During the download of new activities, the system should let use a filter or a counter to exclude unnecessary activities.
-Finally, the set of attitudes that can be classified must be defined a priori. For example, it can be equal, but not limited, to the 4 cognitive functions of the MBTI previously introduced.
+Finally, the set of attitudes that can be classified must be defined a priori. For example, it can be equal, but not limited, to the four cognitive functions of the MBTI previously introduced.
 
 \section{Process logic}
 Here, the fundamental process followed by the system is introduced.
 Each step covers a section of the process required to go from the simple user ID to the final insights that the system aims to provide.
 The whole flow is sequential. Each activity takes as input the output of the previous one
-There are 4 essential steps which can not be excluded despite specific design choices:
+There are four essential steps which can not be excluded despite specific design choices:
 \begin{enumerate}
     \item Download profiles and activities from social networks.
     \item Analyse the downloaded data to extract significant features.
@@ -37,6 +37,7 @@ These functionalities are subsequently realized thanks to different components w
 The final components of the system may vary according to the architectural choices made.
 
 \section{Classificator's architecture}
+\label{sec:systemArch}
 While the first two steps are quite common and do not present significant choices that could modify the system, the third one deserve to be observed in more detail.
 In the extraction of insights at user level, it is essential to understand precisely how the social user is defined and by what data it is characterised.
 The state of the art rarely took into consideration different approaches. Usually, all the information obtainable by the totality of the activities downloaded are put together to represent the user ready to be classified.
@@ -205,7 +206,7 @@ This is necessary because many socials provide free API plans which limit the nu
 \end{verbatim}
 \end{multicols}
 
-\subsection{features extractor}
+\subsection{Features extractor}
 This component works on the downloaded content to extract significant features for the following step.
 From the previous part it receives data both about the user's information and about her activities. While the first one is quite structured and does not need deep analyses, the activities carry raw texts and images which have to be processed to extract the desired information.
 
@@ -320,7 +321,7 @@ Therefore, to handle multiple languages, multiple classifiers are required.
 As output, the same list of input batches is returned where for each implemented aspect the corresponding class is returned.
 %The result of each batch, together with its descriptive information, can now be stored.
 
-
+\clearpage
 \begin{multicols}{2}
 \begin{verbatim}
 //input
@@ -343,16 +344,16 @@ As output, the same list of input batches is returned where for each implemented
 
 \subsection{Insight generator}
 \label{sec:Generator}
-This component has to final task to merge together all the partial results of each batch to generate the general user's insights.
+This component has the final task to merge together all the partial results of each batch to generate the general user's insights.
 To do it, an algorithm was defined. The input of this algorithm is a list of \textbf{classified batches}.
 Each batch is an object that contains the descriptive information necessary to map it into the whole user's timeline and results of all the classifications performed by the system.
-As explained in more details later in Section~\ref{fig:classifiers}, all the results are integers that represent the corresponding class.
-The algorithm is here defined in pseudocode. This results aggregation consider two characteristics of each batch: the number of activities it contained and the time period it covers.
+As explained in more detail in Section~\ref{fig:classifiers}, all the results are integers that represent the corresponding class.
+The algorithm is defined here in pseudocode. This results aggregation consider two characteristics of each batch: the number of activities it contained and the time period it covers.
 These are used to weigh the contribution each batch gives to the final result. Indeed, for each batch, two parameters are calculated.
-$\gamma$ that is the weight coming from the number of activities and $\delta$, that coming from the batch period.
-The algorithm iterates only one on each batch. An iteration is composed by two main parts. In the first one, the two parameters are computed. In the second one, each result is taken in consideration for the final result.
-The method used to choose the final label is the same for all the classification. For each class of each classification a score is computed. So, each result contributes to its class of $s = \gamma / \delta$
-For each classification, the class with the highest final score is assigned. Algorithm 1 explain the method.
+$\gamma$ is the weight coming from the number of activities, while $\delta$ is the weight coming from the batch period.
+The algorithm iterates only once on each batch. An iteration is composed by two main parts. In the first one, the two parameters are computed. In the second one, each result is taken in consideration for the final result.
+The method used to choose the final label is the same for all the classification. For each class of each classification a score is computed. So, each result contributes to its class with $s = \gamma / \delta$
+For each classification, the class with the highest final score is assigned. Algorithm 1 explains the method.
 
 \begin{algorithm}
 \caption{Merge together partial results of each batch}
@@ -388,18 +389,18 @@ Since not enough data to train and evaluate a machine learning model is availabl
 For this reason, as introduced before, many of the algorithms presented here do not follow a machine learning approach but a more standard one.
 
 \subsection{MBTI Personality traits}
-As largely introduced in Chapter~\ref{cha:introduction} the \textit{Meyers-Briggs Type Indicator} model was chosen to extract the psychological characteristics of people.
-Thanks to the availability of a labelled dataset, later presented in Section~\ref{sec:MBTIData}, the extraction of each trait was mapped to a binary classification problem.
+As largely introduced in Chapter~\ref{cha:introduction}, the \textit{Meyers-Briggs Type Indicator} model was chosen to extract the psychological characteristics of people.
+Thanks to the availability of a labelled dataset \footnote{\url{https://www.uantwerpen.be/en/research-groups/clips/research/datasets/}}, the extraction of each trait was mapped to a binary classification problem.
 This model is organized in four different personality traits which consist in four binary functions: Extrovert/Introvert, Sensor/Intuitive, Thinker/Feeler and Judger/Perceiver. The meaning of each class is explained in Section~\ref{sec:MBTI}
 
 Among the extracted features, these four classifiers use especially the textual ones.
 A clear drawback is that, since the majority of these features are language-dependent, the models are trained on a specific language and their application on profiles that do not use that specific one would obviously bring to unreliable results.
-To solve this issue, a model for each supported language should be implemented and then results for each one should be merged together. Thanks to the algorithm showed in Section~\ref{sec:Generator} this last aggregation is not a problem.
+To solve this issue, a model for each supported language should be implemented and then results for each one should be merged together. Thanks to the algorithm showed in Section~\ref{sec:Generator}, this last aggregation is not a problem.
 So, the language-dependence of these classifiers is mainly due to the lack of usable data.
 
 An important choice made for the classification of the MBTI personality model is that each one of the four cognitive functions is classified independently.
-Different approaches tried a multi-class classification on the six-teen personality types given by the combination of the 4 dichotomies.
-However, following the methodologies shown in the current state of the art, the 4 models consist in the same ML algorithm and are trained on the same set of features.
+Different approaches tried a multi-class classification on the sixteen personality types given by the combination of the four dichotomies.
+However, following the methodologies shown in the current state of the art, the four models consist in the same ML algorithm and are trained on the same set of features.
 
 The output of each classifier is an integer representing the assigned value. For example, for the dychotomy \textit{Extrovert/Introvert}, the value $0$ means that the person is extrovert while $1$ indicates introversion.
 
@@ -456,7 +457,7 @@ Finally, the endpoint offered at the user by the system are presented. During th
 The resources publicly exposed are two: \textbf{User} and \textbf{New Activities Download}.
 Regarding the user, it is possible to create new instances, modify, or delete existing ones.
 A user is basically a list of social profiles and a name to be identified. Each social profile requires a user id and an access token.
-When a new user is added to the system, it results as non-classified. The \textbf{New Activities Download} allows you download and classify her social profiles.
+When a new user is added to the system, she results as non-classified. The \textbf{New Activities Download} allows you to download and classify her social profiles.
 At this point, retrieving the user instance it will be classified and the extracted insights about her will be returned.
 The complete API specification can be found on Apiary:
 

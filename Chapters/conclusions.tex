@@ -1,3 +1,34 @@
 \chapter{Conclusions}
-\section{Limitations}
+This dissertation answers to the initial question that regarded both the feasibility of behaviour extraction from social media and the usability of the obtained results in the production environment.
+To do it, a system that uses twitter activities to extract nine different characteristics is presented.
+It differs from the actual state of the art solutions for many reasons. First of all, it automatizes the analysis of a profile to extract its characteristics and is not limited to analyse a list of given activities.
+Then, the system allows the integration of the insights once new activities are posted without the necessity of computing again the whole timeline.
+Furthermore, in addition to the general results, there is a classification for each month of activity of a user that allows displaying temporally the results to observe fluctuations and compare different profiles.
+
+The architecture was designed taking into consideration the requirement imposed by the GDPR.
+In particular, the principles of data minimisation and data accuracy have been studied and both architectural and implementation choices were done to meet these requirements.
+
+Many different aspects have been classifiers. The ones about the psychological aspects implemented ML solutions while the others, due to the lack of available data, implemented non-ML algorithms.
+Concerning the ML solutions, they only support the Italian language since models have been trained only on a dataset of activities completely written in Italian.
+The results' performances of the MBTI classifiers are discrete but lower than than the actual state of the art. However, no particular setups for the features have been used. So, there is ample room to improve them. 
+
+Finally, the implemented user dashboard showed how easily the architecture allows monitoring and inferring insight for a person.
+The analyses of the profiles carried out in Section~\ref{sec:nonMLIns} proved how the system can be useful in the comparison of profiles in order to understand their differences.
+
 \section{Future work}
+Many new aspects that can be added or improved.
+Firstly, the system is designed to interact with different social networks. Due to the privacy policies of some of them, the implemented prototype uses only Twitter data.
+So, adding some new platforms among the most famous, such as Facebook and Instagram, could be a first interesting improvement.
+
+Then, the performance of the existent classifiers may be improved. Starting with the solution based on ML models, two addition can be done. First of all, multi-languages supports can be added my training new models on the new language we want to add and then by merging the results coming from different languages. Secondly, new features and algorithms should be tested. For example, complex services that extract significant personality info both from text and images could be integrated into the system.
+Regarding the other classifications, some of them could be improved by collecting data that can be used to train more accurate models. For example, the influence role classifier could improve significantly by training a model with a dataset of profiles labelled with the corresponding influence class.
+
+Also, new classifiers can be added to the system. There are a lot of useful aspects and behaviours which a company could take advantage from. For example, being able to extract someone's interests from her online activities would improve significantly the use cases of the system here proposed.
+During the realization of this thesis, an approach to extract user's interest from text and images using Wikipedia categories was tried. It was presented by Christian Torrero from \textit{U-Hopper} here \cite{torrero2018wikipedia}.
+The implementation of such service has not been completed but could certainly be one of the next steps.
+
+Then, even though the prototype was implemented following the batch-based architecture with very good results, trying and testing the other proposals and setups would certainly prove the qualitative analysis described in Section~\ref{sec:systemArch}.
+Also, new setups for the insight generation algorithm introduces in Section~\ref{sec:Generator} should be tried and evaluated.
+
+To conclude, this thesis explored some of the issues related to the extraction of behavioural aspects from social media and their use in the production environment and proposed a system that answered the initial problem with satisfying results.
+However, the system is still amendable with what is described in this conclusive section.

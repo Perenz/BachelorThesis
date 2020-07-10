@@ -18,16 +18,16 @@ Indeed, while data from Twitter are publicly accessible through its APIs, other 
 To obtain the access token, a demo video that shows what the system does must be provided, the data treatment has to be described precisely, and each person should accept to share its data.
 \subsection{Download Request}
 \label{sec:downloadRequ}
-The endpoint /newactivities represents the most complex one that involved the majority of the components.
+The endpoint \textit{/newactivities} represents the most complex one that involved the majority of the components.
 In this prototype, the components execute synchronously. In the moment the request is received, the activities collector is executed and the system waits for it to end and return its results.
 Then, all the downloaded activities are analysed. Once all the features are extracted, they are divided in batches and finally classified and stored.
 
-The process starts with the ID of a user which is used to search on the database the Twitter ID associated with that specific user. 
+The process starts with the ID of a system user which is used to search for that specific user and then get her Twitter ID. 
 This is used by the activities collector to download the new content. As said before, the system is structured to download only new activities and not the whole timeline.
-To do it, it is used the ID of the oldest activity of the second-to-last stored batch because the last one could contain only a part of the content posted in a month. 
+To do it, it uses the ID of the oldest activity of the second-to-last stored batch because the last one could contain only a part of the content posted in a month. 
 The drawback of this choice is that activities already contained in the last batches are downloaded and classified again but it is necessary to ensure a full download. Moreover, a maximum of thirty days is downloaded twice which is a limited number compared to the whole user's timeline.
 The collector uses \textit{Tweepy}, a Python library, to access the Twitter API. It allows to download a user's content specifying its ID and the point from where the download of its activities should start.
-Once the download is complete, an object \textbf{User} is created. It contains both social information about the profile, such as creation date and description, and the list of all the fetched activities. Each one is represented by a \textbf{Post} object that contains everything about the downloaded content: creation date, number of likes and retweets, its text, list of media, hashtags and urls.
+Once the download is complete, an object \textbf{User} is created. It contains both social information about the profile, such as creation date and description, and the list of all the fetched activities. Each one is represented by a \textbf{Post} object that contains everything about the downloaded content: creation date, number of likes and retweets, its text, list of media, hashtags, and URLs.
 The user object is passed to the next component, the analyser, with a standard class method call by the request handler.
 
 The analyser is the component that extracts, starting from the single activities, the significant features.
@@ -41,7 +41,7 @@ Before executing the Spacy pipeline, some pre-processing is done. Whitespaces ar
 Then, the text is passed through all the components of the pipeline. It starts with the \textit{tokenizer} which segments text into tokens like words and punctuations marks. The \textit{lemmatizer} is now involved to reduce each word to its canonical form, called \textbf{lemma}. Then, each token is assigned a part-of-speech tag thanks to the \textit{tagger}.
 At this point, 2 custom components are added. First, the extension \textit{spacymoji} is used to handle emojis efficiently. Then, the last component handles \#hashtags and @mentions so that the lemma does not contain special symbols \# and @.
 The result of this pipeline is a list of tokens that represent the bag of words extracted from the text. Each token contains information such as the raw word, its lemma, and its POS tag.
-Now, other more generic features are extracted. spacy allows counting automatically the number of sentences, words, and characters. Starting from this data, many averages are computed such as number of words per sentence and characters per word.
+Now, other more generic features are extracted. spacy allows counting automatically the number of sentences, words, and characters. Starting from this data, many averages are computed such as the number of words per sentence and characters per word.
 To conclude, the tokens extracted before are divided into three different sets: words, stop words, emojis, and punctuation.
 This distinction is important because we that our classification models could treat each set differently.
 Stop words refer to the most common words in a language. There is no single general list of stop words and any group of words can be chosen. Spacy provides its own list for each supported language.
@@ -60,22 +60,22 @@ The response is structured in JSON and contains: the detected language, a sentim
 The score is a more precise indicator ranging from -1.0 (totally negative) to 1.0 (absolutely positive) while the type is a descriptive label which can be \textit{negative}, \textit{neutral}, or \textit{positive}. 
 
 Finally, the set of features regarding the media entities is created. Twitter supports three types of media: photos, videos and animated gifs. They are generally treated as \textit{media entity}.
-The TwitterAPI returns, for each entity, a exhaustive series of descriptive attributes. Of interest for this prototype are the media type and the media URL.
+The TwitterAPI returns, for each entity, an exhaustive series of descriptive attributes. Of interest for this prototype are the media type and the media URL.
 The first one is important to understand in which way a person ten to communicate while the second one represents an important part of the tweet's content.
 They may be analysed in order to detect emotion, entities and, places in a way similar at that done for the text.
-So, even though images and videos are not used in this demo, mainly because rarity of free computer vision services, the URLs are downloaded to easily allow future improvements.
+So, even though images and videos are not used in this demo, mainly because of the rarity of free computer vision services, the URLs are downloaded to easily allow future improvements.
 
 Once all the features are extracted, the same \textbf{User} object taken as input is modified replacing the list of \textbf{Post} object with a list of features which represents the analysed tweets.
 This new object is passed to the next component, the aggregator.
 
-The aggregator has to goal to divide the posts in batches and then compute the aggregates for each batch.
+The aggregator has the goal to divide the posts in batches and then compute the aggregates for each batch.
 As introduced before, in this prototype the batches are temporality-based and each one ranges over a period of one month.
 Thanks to the creation date of the posts, it is easy to divide them. Then, the information related to the social profile is copied into each batch.
 At first each batch represent a partial user composed by its descriptive data and its analysed timeline.
 The aggregator algorithm is executed on each batch to obtain a final classifiable object.
 The system includes many various features structured in many different formats. So, there is no standard way in which these are aggregated together.
 For different typologies, different approaches were applied.
-For example, information about the number of favourites and retweets is given from the simple average all tweets. Textual features about the different sets of tokens are merged by summing together the single count dictionary of each activity. Then, the counters are converted to frequency with respect to the totality of words. 
+For example, information about the number of favourites and retweets is given from the simple average all tweets. Textual features about the different sets of tokens are merged by summing together the single count dictionary of each activity. Then, the counters are converted to the frequency with respect to the totality of words. 
 Two lists are used to count the percentage of each typology of tweets and the time it was posted. Concerning the first one, four elements are enough. Differently, for the second one, it depends on which information is considered necessary.
 Here is used a list of length twenty-four to keep count at which specific hour of the day the activities are posted.
 In the end, the list of batches is returned and given as input to the classifiers.
@@ -115,7 +115,7 @@ Finally, a dashboard to see the results and evaluate the system's efficiency was
 It is a web client that allows searching for a user and observe how his or her insights changed over time.
 
 The application is realized with \textit{HTML}, \textit{JS} and uses \textit{AJAX} to communicate with the system.
-The dashboard send a getUser request~\ref{sec:getUserReq} and display the results in a readable way.
+The dashboard sends a getUser request, explained in Section~\ref{sec:getUserReq}, and displays the results in a readable way.
 For each classification, a stepped line graph is used. On the x-axis, there are the months covering the whole user's timeline.
 On the y-axis, there are the classes depending on which classification is being observed.
 
@@ -124,7 +124,7 @@ Figure~\ref{fig:userDash} shows a view of the dashboard for a random user. The d
 \begin{figure}[htp]
     \centering
     \includegraphics[width=%
-    0.95\textwidth,height=20cm,keepaspectratio]{img/userDash}
-    \caption{A view of the user dashboard}
+    1.0\textwidth,height=9cm]{img/userDash}
+    \caption{A view of the user dashboard. On the left there are the names of the implemented classifications followed by the user's values. In the middle, there is the line chart that displays the monthly batches}
     \label{fig:userDash}
 \end{figure}
