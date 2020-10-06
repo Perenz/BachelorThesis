@@ -1,0 +1,102 @@
+\chapter{Introduction}
+\label{cha:introduction}
+
+During my internship at U-Hopper, I had the opportunity to develop this thesis as a result of my experience inside the company. 
+\textit{ U-Hopper is a research-intensive deep-tech SME, headquartered in Trento, providing big data-enabled solutions and technologies for the government, retail and manufacturing sectors. U-Hopper has received numerous awards for its innovative solutions, including, among the others, the Lamarck prize (2013), a EC Seal of Excellence (2015), the Innov@Retail prize (2016) and a nomination for the 2017 EC Innovation Radar Awards.}.
+The company is active in many different domains such as retail and tourism and offers a variety of competences including chatbots, analytics, and machine learning.
+Thanks to Tapoi\footnote{\url{www.tapoi.me}}, an innovative data intelligence solution, U-Hopper is also into the sector of user profiling.
+It allows businesses to deliver personalized experiences to their customers through the mining and analysis of their activities on social networks.
+Thus, the extraction of behavioural insights can be a valuable aspect since being aware of how an individual comes to a decision helps to provide each customer with the right tailored content.
+
+
+\section{Motivation and business requirements}
+Dissatisfied customers represent a dangerous threat for companies and their brands. Thus, it is fundamental for a business to track audience satisfaction and do whatever it can to fulfil their want.
+Dissatisfaction can impact a company in two different ways. 
+First, those who are not completely satisfied would behave passively towards the business, reducing the number of purchases, and therefore stop being consumers of its products and services.
+Moreover, those who are more active and extroverted could interact with others and convey their disappointment.
+Overall, a large number of unhappy customers will entail a significant loss of customers.
+
+This problem is of particular interest to those typologies of companies that follow a \emph{business-to-customer (B2C)} sales process,
+with a wide customer base and which interactions with their audience are characterized by online relationships.
+This relation can be purely telematic, as in the case of e-commerce, or it can support a physical one where the material interaction is unavoidable, as in the case of banking and insurance sectors.
+
+For this kind of businesses, customers' satisfaction is not trivial to accomplish since each one of them has different needs and requests and standard methodologies do not adapt well for everyone.
+Thus, over the past few years, personalization of customer experience has become vital in order to inspire an honest and natural emotional response.
+It is then important to be able to access information which allows marketeers to offer fully tailored contents, through a specific mean of communication and with personalized messages to meet each individual's requirements.
+
+While, thanks to Customer Relationship Management (CRM), data related to the direct interaction between customer and company has already been deeply explored, social media networks gave access to more personal information allowing a deeper understanding of the person.
+The system discussed in this thesis proposes a solution that goes further than the diffused purchase history-based personalization.
+It aims to provide companies with the ability to extract readable and valuable insights about singular individuals from their activities online.
+The final goal is to make available actionable insights about users' behaviour, demographics, and attitudes.
+
+\section{Extraction of personality models}
+According to neuroscientists Adelstein et al., personality describes human behavioural responses to wide classes of external stimuli \cite{adelstein2011personality}. It works as an adaptive system for taking in, organizing information and driving the response to inner and outside demands \cite{block2002personality}.
+The parameters of the adaptive system represent the variation of the same from person to person and, therefore, characterize uniquely every individual. These parameters are also referred to as personality traits in several different personality models studied over the years.
+Each model includes its range of traits which combinations describe several personality types.
+Researchers have shown clear connections between general personality traits and many types of behaviour.
+
+
+Some fundamental traits describe the type of relationship a person has with the outside world and the way he or she communicates \cite{lima2016predicting}.
+Thus, to facilitate communication, recently, businesses are using personality models to gain a better understanding of what drives the interests of a person.
+This approach is showing clear benefits in many different applications.
+In the field of Human-Computer Interaction, users prefer interfaces designed to represent personalities that most closely matched their own \cite{nass2000does}.
+Some studies have also suggested connections between customer personality and marketing. Through techniques more focused on the target audience, it is possible to profile individuals, and tailor advertisement automatically displayed based on their personality \cite{bachrach2012personality}.
+Therefore, the ability to identify people's personality or, even better, details of their personality traits through well-defined models is a significant competitive advantage since
+we would have a precise representation of the customer's reasoning process.
+
+%Big5
+While several models exist, the \textit{Big Five}, also known as the \textit{five-factor model} and the \textit{OCEAN model} is one of the most well-researched and widely accepted taxonomies among scientists \cite{mccrae1992introduction, mccrae1987validation}.
+It formalizes personality along 5 domains, namely Openness, Conscientiousness, Extroversion, Agreeableness, and Neuroticism. Each one of these traits is continuous and usually ranges on a scale from 1 to 5.
+
+This model is one of the standards in the psychological community, largely accepted by the most scientists since it allows describing accurately the traits of a singular.
+However, concerning the exploitation of personality information in the work and marketing environments, it received some critics about the extraction of actionable insights \cite{hough2003use, patton2014career}.
+Indeed, since each trait is represented by a real number between two extremes, it has been argued to be hardly readable and therefore less valuable for fields such as marketing and business.
+Thus, structures based on clearer distinctions are often preferred.
+
+%MBTI
+\subsection{Myers-Briggs Type Indicator}
+\label{sec:MBTI}
+\textit{The Myers-Briggs model}, also called \textit{Myers-Briggs Type Indicator, or MBTI}, is the most common alternative to the Big-Five model.
+Contrarily to the former, there are discussions about the MBTI and its limitations in reflecting the whole personality system. 
+Boyle and Barbuto are two of the scientists that presented a number of psychometric limitations pertaining to the validity and reliability of this model \cite{boyle1995myers,barbuto1997critique}.
+However, many of their arguments have been proved wrong by Furnham who demonstrated several correlations between the dimensions defined by Myers and the big five factors \cite{furnham1996big}.
+
+The MBTI is a categorical model, based on the conceptual theory of Jung and developed by Katharine Briggs and Isabel Myers who used four different dichotomies to evaluate the personality of people \cite{jung1971personality}. 
+A first one differentiates a person's attitude in either extraversion (E) or introversion (I).These two preferences describe if one focusses on external stimuli, such as action and interaction with other people or internal ones like self-reflection.
+Two perceiving functions, sensation (S) and intuition (N) describe the process of gathering new information. On the one hand, people who trust tangible and concrete facts; on the other hand, those who tend to find patterns and meaning also regarding future possibilities.
+The third cognitive function is that of decision-making which can be thinking (T) or feeling (F). While thinkers make reasonable and consistent choices and reflect over consequences applying a rigid set of rules, feelers tend to emphasize with the situation considering the needs of people involved
+Finally, there is the lifestyle preference function dichotomy, judging (J) or perceiving (P). Judging types like the outside world to be structured; according to Myers, they prefer to ``have maters settled''. On the contrary, perceiving personalities like it flexible and spontaneous and tend to ``keep decisions open'' \cite{myers2010gifts}.
+There are 16 different types of personality given by the combination of these 4 cognitive functions identified by 4-characters codes such as ``INFJ'' or ``ENFP''.
+
+\section{Research objectives}
+\label{sec:resObj}
+Extraction of behavioural insights from social media has recently attracted the attention of both researchers and businesses.
+Even though the latter has released a couple of solutions, these fit better for personal and psychological use rather than a commercial one.
+The main objective of this thesis is to design and develop a solution that can be used by a company to personalize customer experience with respect to individual abstract preferences.
+Therefore, the question it answers is: \textit{is it possible to understand costumers behaviour from their online profiles and activities?.}
+
+%ML Problem
+Using a personality model to catch these behavioural aspects, the extraction of personality from social media activities is a \textit{machine learning} problem. Precisely, with a categorical model, such as the MBTI, it consists of numerous classification tasks, one for each variable of the taxonomy.
+Machine learning is one of the most talked-about fields of computer science and many sources give their own definition. Basically, ML deals with allowing a computer system to ``learn with data, without being explicitly programmed" \cite{samuel1959some}.
+It has been applied in many contexts, such as decision making, optimization problems, forecasts, and predictions.
+Nowadays, we face ourselves with machine learning in everyday life: home assistants, security surveillance, music and shopping suggestions, customer services are strongly powered by artificial intelligence.
+These services rely on data to learn how to work as good as possible: they are trained with samples of data similar to what they expect to receive by their users: the more accurate, exhaustive and in large quantities they are, the better the system learns. Therefore, data have a very central role in machine learning problems.
+
+A classification task has the goal of assigning a belonging class to a given object. The input is composed by a tuple of \emph{features} that characterize the object, usually made by numbers, and the output is a categorical variable, such as a "yes/no" label. In other words, it can be seen as a mathematical function, that maps a vector $ \boldsymbol{x} \in \mathbb{R}^n $ to an answer $ y \in C $
+\begin{gather*}
+\begin{split}
+f & \colon \mathbb{R}^n \to C \\
+f & \colon \boldsymbol{x} \mapsto y
+\end{split}
+\end{gather*}
+where $C$ is a set of possible categories.
+For example, in one of the four classifiers for this problem, $ \boldsymbol{x} $ represents a user and her activities on the social media, and $C = \{\text{\texttt{Introvert}, \texttt{Extrovert}}\}$
+
+%GDPR Problem
+The designed system should be able to work with numerous social media platforms to have a wide variety of data sources.
+Finally, the principal aspect that it must always satisfy is the \emph{ability to use the result}. Indeed, extracted insights need to be actually actionable, directly by the marketing department or in conjunction with further analysis, to represent a competitive advantage.
+\section{Outline}
+
+Chapter 2 describes the state of the art. Chapter 3 introduces the design of the solution. It focuses on used components and algorithms, their logic and their interfaces. 
+Chapter 4 shows how the mentioned components are implemented and integrated. It follows the implementation of the algorithm and the evaluation of a general prototype of the proposed system. 
+Chapter 5 concludes the thesis with some observations and future work proposals.

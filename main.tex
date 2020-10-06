@@ -1,81 +1,133 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Template per Elaborato di Laurea
+% DISI - Dipartimento di Ingegneria e Scienza dell’Informazione
+%
+% update 2015-09-10
+%
+% Per la generazione corretta del 
+% pdflatex nome_file.tex
+% bibtex nome_file.aux
+% pdflatex nome_file.tex
+% pdflatex nome_file.tex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[epsfig,a4paper,11pt,titlepage,twoside,openany]{book}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
 \usepackage[italian, english]{babel}
-\usepackage{lipsum} %genera testo fittizzio
+\usepackage{lipsum} %genera testo fittizio
 \usepackage{url} %per scrivere gli URL
-\usepackage{biblatex}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{multicol}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyvrb}
+\usepackage{plain}
 \usepackage{epsfig}%Per il logo in formato eps
-%Per layot e dimensioni
+%\usepackage{hyperref}%Per link interattivi a capitolo, note e citazioni
+%Per layout e dimensioni
 \usepackage[paperheight=29.7cm,paperwidth=21cm,outer=2.5cm,inner=2.5cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{plain}
 \usepackage{setspace}
-
 \usepackage{titlesec}
+\counterwithout{footnote}{chapter}
 
-\addbibresource{bibliography.bib}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
 
+
+
+%%%%%%%%%%%%%%
+% supporto lettere accentate
+%
+\usepackage[latin1]{inputenc} % per Windows;
+%\usepackage[utf8x]{inputenc} % per Linux (richiede il pacchetto unicode);
+%\usepackage[applemac]{inputenc} % per Mac.
+
+\singlespacing
+
+\usepackage[english]{babel}
+\usepackage{chngcntr}
 \counterwithout{footnote}{chapter}
 
 \newcommand\MyBox[2]{
     \fbox{\lower0.75cm
         \vbox to 1.7cm{\vfil
             \hbox to 1.7cm{\hfil\parbox{1.4cm}{\centerline{#1}}\hfil}
-            \vfil}%
-    }%
+            \vfil}
+    }
 }
-\newcommand*\NewPage{\newpage\null\thispagestyle{empty}\newpage}
+\newcommand*\NewPage{\newpage\null\thispagestyle{empty}}
+
+
+\addbibresource{biblio.bib}
 
 \begin{document}
-\raggedbottom  
+\raggedbottom
 \widowpenalty10000
+
+%Nessuna intestazione e pie pagina con numero al centro
+\pagestyle{plain}
 
 
 %No numerazione
 \pagenumbering{gobble}
 \input{pagina_iniziale}
 \clearpage
-\newpage
+%\newpage
 
+%Ringraziamenti
+\input{Chapters/thank}
+\clearpage
 
 %Inizio numerazione
 \mainmatter
 \tableofcontents
-
-\input{abstract}
 \clearpage
-\newpage
+%\NewPage
 
-\input{introduction}
+\input{Chapters/abstract}
 \clearpage
-\newpage
+%\NewPage
+
+\titleformat{\chapter}
+    {\normalfont\Huge\bfseries}{\thechapter}{1em}{}
+
+\input{Chapters/introduction}
+\clearpage
+%\NewPage
 
 
 
-\chapter{State of the Art}
-This section and its subsections could change significantly
-\section{Social media analysis}
-\section{Psychometric Profiling}
-\section{Personality insights}
-\newpage
+\input{Chapters/soa}
+\clearpage
+%\NewPage
 
-\chapter{Design and methodology}
-\section{Components logic}
-\section{Algorithms}
-\newpage
+\input{Chapters/design}
+\clearpage
+%\NewPage
 
-\chapter{Implementation and evaluation}
-\section{Components interactions}
-\section{Algorithms implementation}
-\section{Evaluation metrics}
-\section{Performance evaluation of the system}
-\newpage
+\input{Chapters/implementation}
+\clearpage
+%\NewPage
 
-\chapter{Conclusions}
-\section{Limitations}
-\section{Future work}
-\newpage
+\input{Chapters/evauation}
+\clearpage
+%\NewPage
+
+\input{Chapters/conclusions}
+\clearpage
+%\NewPage
 
 % Bibliography
 \printbibliography[heading=bibintoc, title={References}]
-
 \end{document}

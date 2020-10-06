@@ -1,0 +1,26 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+The recent rise of social media inside the life of our society caused a sharp increment of data availability at the user's level.
+Almost everyone relies daily on this type of platform to share their experiences, their thoughts, to interact with friends, to stay up to date with the latest news and also to find new career opportunities.
+All these activities carried out by a user leave publicly accessible a great amount of relevant information. The frequency a person logs into a social, the way he or she interacts, the network created by her connections
+allow extracting several personal aspects of the single individual. These characteristics can include personality traits, habits and particular attitudes. So, if identified, they can provide a huge business advantage in terms of knowledge of your own customers.
+
+Social media result perfect for this type of analysis because people feel free to post whatever and whenever they want, often giving a strong personal opinion which reveals the behavioural aspects introduced before.
+Moreover, these services has been growing exponentially in the number of active users in the last decade. For example, the last \emph{Digital 2020 Report}, carried out by \textit{wearesocial.com}, shows that worldwide there are more than 3.8 billion social media users\footnote{\url{https://wearesocial.com}}.
+
+Even though the current literature has been covering the extraction of behaviours from social media, the majority of studies do not focus on the application of the result in order to get a marketing advantage.
+Therefore, there is no software system able to identify, and then let companies use, this information.
+For example, none of the research observed took into consideration users' rights in terms of privacy and data protection. 
+However, since regulations such as the GDPR are becoming mandatory all around the world, compliance to their rules should not be neglected.
+Therefore, the final goal of this thesis is the development of a system for the extraction of personal habits and attitudes from social media that are immediately relevant and usable by a company's marketeers.
+This project has been realized at U-Hopper, a small enterprise located in Trento specialized in big data analytics solutions.
+
+The proposed system follows the whole process, from the download of raw data from social media to the conclusive behavioural insights. 
+Each phase was developed taking into consideration different aspects. In particular, with respect to the state of the art, this solution follows the main requirements of the GDPR regarding the authorization to access personal data and then the correct treatment of the same.
+The prototype is designed to interact with many social networks using their public API to download user's content. The part of insight generation is realized applying many different techniques.
+It uses both machine learning models for the extraction of personality traits of the MBTI personality model and non-machine learning algorithm for the computation of better-defined parameters, such as the language used or the periods of activities through the day.
+All these algorithms rely on information obtained through different analyses on the downloaded social profiles. For example, the natural language processing of the activities' text represents an important component, especially for the identification of the personality characteristics.
+The system was then developed as a web service accessible and exploitable thanks to a series of well-defined endpoints.
+
+Finally, a web dashboard was realized to help the evaluation of the system. Thanks to some architectural choices made, it also allows to observe how the identified insights varied over time.
+This dashboard was then used to analyse and observe more than twenty different profiles.
